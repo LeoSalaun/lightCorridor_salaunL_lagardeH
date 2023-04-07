@@ -99,6 +99,7 @@ void drawUnfilledSquare() {
 		
 		glTexCoord2f(0.0, 0.0);
 		glVertex2f(-0.5, 0.5);
+		glTexCoord2f(0.0, 1.0);
 	glEnd();
 }
 
