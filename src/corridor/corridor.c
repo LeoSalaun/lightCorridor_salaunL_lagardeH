@@ -74,15 +74,15 @@ void onKey(GLFWwindow *window, int key, int scancode, int action, int mods)
 
 void drawSquare()
 {
+	glScalef(4, 2, 4);
+	glRotatef(45, 0, 1, 0);
 	glBegin(GL_QUADS);
-	glTexCoord2f(0.0, 1.0);
-	glVertex2f(-0.5, -0.5);
-	glTexCoord2f(1.0, 1.0);
-	glVertex2f(0.5, -0.5);
-	glTexCoord2f(1.0, 0.0);
-	glVertex2f(0.5, 0.5);
-	glTexCoord2f(0.0, 0.0);
-	glVertex2f(-0.5, 0.5);
+
+	glVertex3f(-3.0, -3.0, 0); // coin inférieur gauche
+	glVertex3f(3.0, -3.0, 0);  // coin inférieur droit
+	glVertex3f(3.0, 3.0, 0);   // coin supérieur droit
+	glVertex3f(-3.0, 3.0, 0);  // coin supérieur gauche
+
 	glEnd();
 }
 
@@ -116,18 +116,18 @@ int main(int argc, char **argv)
 	glPointSize(4.0);
 
 	/* Load images */
-	// int width, height, nb_canaux;
+	/*int width, height, nb_canaux;
 
-	// unsigned char *image = stbi_load("doc/IMAC.png", &width, &height, &nb_canaux, 0);
+	unsigned char *image = stbi_load("doc/IMAC.png", &width, &height, &nb_canaux, 0);
 
-	// if (image == NULL)
-	// {
-	// 	printf("Erreur lors du chargement de l'image !\n");
-	// }
-	// else
-	// {
-	// 	printf("Image correctement chargée\n");
-	// }
+	if (image == NULL)
+	{
+		printf("Erreur lors du chargement de l'image !\n");
+	}
+	else
+	{
+		printf("Image correctement chargée\n");
+	}*/
 
 	// GLuint textures;
 
@@ -157,6 +157,7 @@ int main(int argc, char **argv)
 		/* RENDER HERE */
 
 		drawSquare();
+
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
