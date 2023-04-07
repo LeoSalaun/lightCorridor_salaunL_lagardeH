@@ -22,9 +22,6 @@ EXEC_RQT= raquette.out
 
 all : raquette corridor
 
-base : $(OBJDIR)$(OBJ_base)
-	$(CC) $(CFLAGS) $(OBJDIR)$(OBJ_base) -o $(BINDIR)$(EXEC_base) $(LDFLAGS)
-
 corridor : $(OBJDIR)$(OBJ_CRD)
 	$(CC) $(CFLAGS) $(OBJDIR)$(OBJ_CRD) -o $(BINDIR)$(EXEC_CRD) $(LDFLAGS)
 
