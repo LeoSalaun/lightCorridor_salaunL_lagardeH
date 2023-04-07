@@ -6,6 +6,9 @@ BINDIR	= bin/
 SRCDIR	= src/
 OBJDIR	= obj/
 
+# Fichiers globaux
+GLOB_OBJ_TD= 3D_tools.o
+
 # Fichiers base.c
 OBJ_base= ex01/base.o
 EXEC_base= base.out
@@ -15,15 +18,15 @@ OBJ_CRD= corridor/corridor.o
 EXEC_CRD= corridor.out
 
 # Fichiers raquette
-OBJ_RQT= raquette/raquette.o
+OBJ_RQT= $(GLOB_OBJ_TD) raquette/raquette.o
 EXEC_RQT= raquette.out
 
 # Regles compilation projet
 
-all : raquette corridor
+all : raquette #corridor
 
 corridor : $(OBJDIR)$(OBJ_CRD)
-	$(CC) $(CFLAGS) $(OBJDIR)$(OBJ_CRD) -o $(BINDIR)$(EXEC_CRD) $(LDFLAGS)
+	$(CC) $(CFLAGS) $(OBJDIR)/$(OBJ_CRD) -o $(BINDIR)/$(EXEC_CRD) $(LDFLAGS)
 
 raquette : $(OBJDIR)$(OBJ_RQT)
 	$(CC) $(CFLAGS) $(OBJDIR)$(OBJ_RQT) -o $(BINDIR)$(EXEC_RQT) $(LDFLAGS)

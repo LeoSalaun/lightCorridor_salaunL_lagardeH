@@ -75,13 +75,13 @@ void onKey(GLFWwindow *window, int key, int scancode, int action, int mods)
 void drawSquare()
 {
 	glBegin(GL_QUADS);
-	glTexCoord2f(0.0, 1.0);
+	//glTexCoord2f(0.0, 1.0);
 	glVertex2f(-0.5, -0.5);
-	glTexCoord2f(1.0, 1.0);
+	//glTexCoord2f(1.0, 1.0);
 	glVertex2f(0.5, -0.5);
-	glTexCoord2f(1.0, 0.0);
+	//glTexCoord2f(1.0, 0.0);
 	glVertex2f(0.5, 0.5);
-	glTexCoord2f(0.0, 0.0);
+	//glTexCoord2f(0.0, 0.0);
 	glVertex2f(-0.5, 0.5);
 	glEnd();
 }
@@ -116,7 +116,7 @@ int main(int argc, char **argv)
 	glPointSize(4.0);
 
 	/* Load images */
-	int width, height, nb_canaux;
+	/*int width, height, nb_canaux;
 
 	unsigned char *image = stbi_load("doc/IMAC.png", &width, &height, &nb_canaux, 0);
 
@@ -127,19 +127,19 @@ int main(int argc, char **argv)
 	else
 	{
 		printf("Image correctement chargée\n");
-	}
+	}*/
 
-	GLuint textures;
+	//GLuint textures;
 
-	glGenTextures(1, &textures);
+	//glGenTextures(1, &textures);
 
-	glBindTexture(GL_TEXTURE_2D, textures);
+	//glBindTexture(GL_TEXTURE_2D, textures);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 
 	int rot = 0;
 
@@ -158,25 +158,7 @@ int main(int argc, char **argv)
 
 		/* RENDER HERE */
 
-		glRotatef(rot, 0, 0, 1);
-		glScalef(10.0, 13.0, 1.0);
-
-		glEnable(GL_TEXTURE_2D);
-
-		glBindTexture(GL_TEXTURE_2D, textures);
-
 		drawSquare();
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		glDisable(GL_TEXTURE_2D);
-
-		rot++;
-
-		if (rot == 360)
-		{
-			rot = 0;
-		}
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -193,9 +175,9 @@ int main(int argc, char **argv)
 		}
 	}
 
-	stbi_image_free(image);
+	//stbi_image_free(image);
 
-	glDeleteTextures(1, &textures);
+	//glDeleteTextures(1, &textures);
 
 	glfwTerminate();
 	return 0;

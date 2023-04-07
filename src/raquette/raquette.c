@@ -70,6 +70,7 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 	}
 }
 
+
 void drawSquare() {
 	glBegin(GL_QUADS);
 		glTexCoord2f(0.0, 1.0);
@@ -84,22 +85,17 @@ void drawSquare() {
 }
 
 void drawUnfilledSquare() {
-	glBegin(GL_LINES);
+	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+	
+	glBegin(GL_QUADS);
 		glTexCoord2f(0.0, 1.0);
 		glVertex2f(-0.5, -0.5);
 		glTexCoord2f(1.0, 1.0);
-		
-		glTexCoord2f(1.0, 1.0);
 		glVertex2f(0.5, -0.5);
-		glTexCoord2f(1.0, 0.0);
-		
 		glTexCoord2f(1.0, 0.0);
 		glVertex2f(0.5, 0.5);
 		glTexCoord2f(0.0, 0.0);
-		
-		glTexCoord2f(0.0, 0.0);
 		glVertex2f(-0.5, 0.5);
-		glTexCoord2f(0.0, 1.0);
 	glEnd();
 }
 
@@ -154,6 +150,11 @@ int main(int argc, char** argv)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 	
 	glBindTexture(GL_TEXTURE_2D, 0);*/
+	
+	
+	/* Initialize variables */
+	
+	double xpos, ypos;
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -170,7 +171,15 @@ int main(int argc, char** argv)
 
 		/* RENDER HERE */
 		
-		drawUnfilledSquare();
+		glfwGetCursorPos(window, &xpos, &ypos);
+		
+		glPushMatrix();
+			glScalef(2.5,2.5,0.);
+			glTranslatef(xpos/100-5, -ypos/100+4, 0.);
+			drawUnfilledSquare();
+		glPopMatrix();
+		
+		drawSphere();
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
