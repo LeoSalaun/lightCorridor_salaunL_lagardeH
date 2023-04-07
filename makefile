@@ -6,6 +6,10 @@ BINDIR	= bin/
 SRCDIR	= src/
 OBJDIR	= obj/
 
+# Fichiers base.c
+OBJ_base= ex01/base.o
+EXEC_base= base.out
+
 # Fichiers corridor
 OBJ_CRD= corridor/corridor.o
 EXEC_CRD= corridor.out
@@ -17,6 +21,9 @@ EXEC_RQT= raquette.out
 # Regles compilation projet
 
 all : raquette corridor
+
+base : $(OBJDIR)$(OBJ_base)
+	$(CC) $(CFLAGS) $(OBJDIR)$(OBJ_base) -o $(BINDIR)$(EXEC_base) $(LDFLAGS)
 
 corridor : $(OBJDIR)$(OBJ_CRD)
 	$(CC) $(CFLAGS) $(OBJDIR)$(OBJ_CRD) -o $(BINDIR)$(EXEC_CRD) $(LDFLAGS)
