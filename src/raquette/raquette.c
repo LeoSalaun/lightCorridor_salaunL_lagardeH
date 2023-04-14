@@ -7,6 +7,7 @@
 #include <math.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "3D_tools.h"
 
 /* Window properties */
 static const unsigned int WINDOW_WIDTH = 1000;
@@ -34,21 +35,8 @@ void onWindowResized(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
-	if( aspectRatio > 1)
-	{
-		gluOrtho2D(
-		-GL_VIEW_SIZE / 2. * aspectRatio, GL_VIEW_SIZE / 2. * aspectRatio,
-		-GL_VIEW_SIZE / 2., GL_VIEW_SIZE / 2.);
-	}
-	else
-	{
-		gluOrtho2D(
-		-GL_VIEW_SIZE / 2., GL_VIEW_SIZE / 2.,
-		-GL_VIEW_SIZE / 2. / aspectRatio, GL_VIEW_SIZE / 2. / aspectRatio);
-	}
+	gluPerspective(60.0,aspectRatio,Z_NEAR,Z_FAR);
 	glMatrixMode(GL_MODELVIEW);
-
 }
 
 void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -57,7 +45,7 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 		switch(key) {
 			case GLFW_KEY_A :
 			case GLFW_KEY_ESCAPE :
-				glfwSetWindowShouldClose(window, GLFW_TRUE); 
+				glfwSetWindowShouldClose(window, GLFW_TRUE);
 				break;
 			case GLFW_KEY_L :
 				glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
@@ -65,24 +53,52 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 			case GLFW_KEY_P :
 				glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 				break;
-			default: fprintf(stdout,"Touche non gérée\n");
+			/*case GLFW_KEY_R :
+				flag_animate_rot_arm = 1-flag_animate_rot_arm;
+				break;
+			case GLFW_KEY_T :
+				flag_animate_rot_scale = 1-flag_animate_rot_scale;
+				break;*/
+			case GLFW_KEY_KP_9 :
+				if(dist_zoom<100.0f) dist_zoom*=1.1;
+				printf("Zoom is %f\n",dist_zoom);
+				break;
+			case GLFW_KEY_KP_3 :
+				if(dist_zoom>1.0f) dist_zoom*=0.9;
+				printf("Zoom is %f\n",dist_zoom);
+				break;
+			case GLFW_KEY_UP :
+				if (phy>2) phy -= 2;
+				printf("Phy %f\n",phy);
+				break;
+			case GLFW_KEY_DOWN :
+				if (phy<=88.) phy += 2;
+				printf("Phy %f\n",phy);
+				break;
+			case GLFW_KEY_LEFT :
+				theta -= 5;
+				break;
+			case GLFW_KEY_RIGHT :
+				theta += 5;
+				break;
+			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
 		}
 	}
 }
 
 
-void drawSquare() {
+/*void drawSquare() {
 	glBegin(GL_QUADS);
-		glTexCoord2f(0.0, 1.0);
+		//glTexCoord2f(0.0, 1.0);
 		glVertex2f(-0.5, -0.5);
-		glTexCoord2f(1.0, 1.0);
+		//glTexCoord2f(1.0, 1.0);
 		glVertex2f(0.5, -0.5);
-		glTexCoord2f(1.0, 0.0);
+		//glTexCoord2f(1.0, 0.0);
 		glVertex2f(0.5, 0.5);
-		glTexCoord2f(0.0, 0.0);
+		//glTexCoord2f(0.0, 0.0);
 		glVertex2f(-0.5, 0.5);
 	glEnd();
-}
+}*/
 
 void drawUnfilledSquare() {
 	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
@@ -97,6 +113,8 @@ void drawUnfilledSquare() {
 		glTexCoord2f(0.0, 0.0);
 		glVertex2f(-0.5, 0.5);
 	glEnd();
+	
+	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 }
 
 int main(int argc, char** argv) 
@@ -174,12 +192,17 @@ int main(int argc, char** argv)
 		glfwGetCursorPos(window, &xpos, &ypos);
 		
 		glPushMatrix();
-			glScalef(2.5,2.5,0.);
-			glTranslatef(xpos/100-5, -ypos/100+4, 0.);
-			drawUnfilledSquare();
+			glTranslatef(0.,0.,-GL_VIEW_SIZE);
+			glPushMatrix();
+				glScalef(2.5,2.5,2.5);
+				glTranslatef(xpos/100-5, -ypos/100+4, 0.);
+				drawUnfilledSquare();
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(xpos*2.5/100-12.5, -ypos*2.5/100+10, 0.);
+				drawSphere();
+			glPopMatrix();
 		glPopMatrix();
-		
-		drawSphere();
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);

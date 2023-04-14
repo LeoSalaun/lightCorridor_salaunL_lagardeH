@@ -7,29 +7,29 @@ SRCDIR	= src/
 OBJDIR	= obj/
 
 # Fichiers globaux
-GLOB_OBJ_TD= 3D_tools.o
+GLOB_OBJ_DIR= $(OBJDIR)3D_tools.o
 
 # Fichiers base.c
 OBJ_base= ex01/base.o
 EXEC_base= base.out
 
 # Fichiers corridor
-OBJ_CRD= corridor/corridor.o
+OBJ_CRD= $(GLOB_OBJ_DIR) $(OBJDIR)draw_scene.o $(OBJDIR)corridor/corridor.o
 EXEC_CRD= corridor.out
 
 # Fichiers raquette
-OBJ_RQT= $(GLOB_OBJ_TD) raquette/raquette.o
+OBJ_RQT= $(GLOB_OBJ_DIR) $(OBJDIR)draw_scene.o $(OBJDIR)raquette/raquette.o
 EXEC_RQT= raquette.out
 
 # Regles compilation projet
 
 all : raquette #corridor
 
-corridor : $(OBJDIR)$(OBJ_CRD)
-	$(CC) $(CFLAGS) $(OBJDIR)/$(OBJ_CRD) -o $(BINDIR)/$(EXEC_CRD) $(LDFLAGS)
+corridor : $(OBJ_CRD)
+	$(CC) $(CFLAGS) $(OBJ_CRD) -o $(BINDIR)/$(EXEC_CRD) $(LDFLAGS)
 
-raquette : $(OBJDIR)$(OBJ_RQT)
-	$(CC) $(CFLAGS) $(OBJDIR)$(OBJ_RQT) -o $(BINDIR)$(EXEC_RQT) $(LDFLAGS)
+raquette : $(OBJ_RQT)
+	$(CC) $(CFLAGS) $(OBJ_RQT) -o $(BINDIR)$(EXEC_RQT) $(LDFLAGS)
 
 clean :
 	rm -rf *~
