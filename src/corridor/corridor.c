@@ -75,7 +75,7 @@ void onKey(GLFWwindow *window, int key, int scancode, int action, int mods)
 void drawSquare()
 {
 	glScalef(4, 2, 4);
-	glRotatef(45, 0, 1, 0);
+	glRotatef(90, 0, 1, 0);
 	glBegin(GL_QUADS);
 
 	glVertex3f(-3.0, -3.0, 0); // coin inférieur gauche
