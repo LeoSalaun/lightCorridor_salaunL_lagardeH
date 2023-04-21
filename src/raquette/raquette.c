@@ -28,6 +28,24 @@ void onError(int error, const char* description)
 	fprintf(stderr, "GLFW Error: %s\n", description);
 }
 
+/* Project variable definition */
+
+typedef struct Ball {
+	double posX;
+	double posY;
+	double posZ;
+	
+	double speeX;
+	double speeY;
+	double speeZ;
+	
+	int sticky;
+} Ball;
+
+static Ball balle;
+
+static double xpos, ypos;;
+
 void onWindowResized(GLFWwindow* window, int width, int height)
 {
 	aspectRatio = width / (float) height;
@@ -53,12 +71,6 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 			case GLFW_KEY_P :
 				glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 				break;
-			/*case GLFW_KEY_R :
-				flag_animate_rot_arm = 1-flag_animate_rot_arm;
-				break;
-			case GLFW_KEY_T :
-				flag_animate_rot_scale = 1-flag_animate_rot_scale;
-				break;*/
 			case GLFW_KEY_KP_9 :
 				if(dist_zoom<100.0f) dist_zoom*=1.1;
 				printf("Zoom is %f\n",dist_zoom);
@@ -86,6 +98,16 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 	}
 }
 
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+    	balle.sticky = 0;
+	balle.speeZ = -5;
+    }
+}
+
+
+
 
 /*void drawSquare() {
 	glBegin(GL_QUADS);
@@ -100,7 +122,7 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 	glEnd();
 }*/
 
-void drawUnfilledSquare() {
+void drawUnfilledSquare() { // On dessine un carré vide en dessinant 4 lignes
 	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 	
 	glBegin(GL_QUADS);
@@ -115,6 +137,33 @@ void drawUnfilledSquare() {
 	glEnd();
 	
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+}
+
+void drawRaquette() { // On dessine la raquette à partir du carré vide là où se trouve la souris
+	glPushMatrix();
+		glColor3f(1,1,1);
+		glScalef(2.5,2.5,2.5);
+		glTranslatef(xpos/100-5, -ypos/100+4, 0.);
+		drawUnfilledSquare();
+	glPopMatrix();
+}
+
+void drawBall() { // On dessine la balle
+	glPushMatrix();
+		if (balle.sticky) { // Si sticky = 1, la balle est dessinée là où se trouve la souris, devant la raquette
+			balle.posX = xpos*2.5/100-12.5;
+			balle.posY = -ypos*2.5/100+10;
+			balle.posZ = -1.;
+		}
+		else { // Sinon, sa position est déterminée en fonction de sa position précédente et de sa vitesse
+			balle.posX += balle.speeX;
+			balle.posY += balle.speeY;
+			balle.posZ += balle.speeZ;
+		}
+		glColor3f(0.75,0,0);
+		glTranslatef( balle.posX , balle.posY , balle.posZ );
+		drawSphere();
+	glPopMatrix();
 }
 
 int main(int argc, char** argv) 
@@ -140,6 +189,7 @@ int main(int argc, char** argv)
 
 	glfwSetWindowSizeCallback(window,onWindowResized);
 	glfwSetKeyCallback(window, onKey);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
 
 	onWindowResized(window,WINDOW_WIDTH,WINDOW_HEIGHT);
 
@@ -172,7 +222,10 @@ int main(int argc, char** argv)
 	
 	/* Initialize variables */
 	
-	double xpos, ypos;
+	balle.sticky = 1;
+	balle.speeX = 0;
+	balle.speeY = 0;
+	balle.speeZ = 0;
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -189,19 +242,14 @@ int main(int argc, char** argv)
 
 		/* RENDER HERE */
 		
-		glfwGetCursorPos(window, &xpos, &ypos);
+		glfwGetCursorPos(window, &xpos, &ypos); // On reçoit la position du curseur de la souris
 		
 		glPushMatrix();
-			glTranslatef(0.,0.,-GL_VIEW_SIZE);
-			glPushMatrix();
-				glScalef(2.5,2.5,2.5);
-				glTranslatef(xpos/100-5, -ypos/100+4, 0.);
-				drawUnfilledSquare();
-			glPopMatrix();
-			glPushMatrix();
-				glTranslatef(xpos*2.5/100-12.5, -ypos*2.5/100+10, 0.);
-				drawSphere();
-			glPopMatrix();
+			glTranslatef(0.,0.,-GL_VIEW_SIZE); // On déplace de GL_VIEW_SIZE en avant pour avoir les éléments devant la caméra
+			
+			drawBall(xpos, ypos);
+			
+			drawRaquette();
 		glPopMatrix();
 
 		/* Swap front and back buffers */
