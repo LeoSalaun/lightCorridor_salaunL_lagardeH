@@ -10,8 +10,8 @@
 #include "3D_tools.h"
 
 /* Window properties */
-static const unsigned int WINDOW_WIDTH = 1000;
-static const unsigned int WINDOW_HEIGHT = 800;
+static const unsigned int WINDOW_WIDTH = 1280;
+static const unsigned int WINDOW_HEIGHT = 720;
 static const char WINDOW_TITLE[] = "TD04 Ex01";
 static float aspectRatio = 1.0;
 
@@ -30,21 +30,17 @@ void onError(int error, const char* description)
 
 /* Project variable definition */
 
-typedef struct Ball {
-	double posX;
-	double posY;
-	double posZ;
-	
-	double speeX;
-	double speeY;
-	double speeZ;
-	
-	int sticky;
-} Ball;
+struct Obstacle {
+	int pos;
+	int size;
+	char wall;
+}Obstacle;
 
-static Ball balle;
+static double obstacleSpeed = 0.5;
+static double corridorBorderPos[4] = {-10,-20,-30,-40};
 
-static double xpos, ypos;
+static int nbObstacles = 10;
+static Obstacle obstacles[nbObstacles];
 
 void onWindowResized(GLFWwindow* window, int width, int height)
 {
@@ -100,27 +96,10 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-    	balle.sticky = 0;
-	balle.speeZ = -5;
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+    	
     }
 }
-
-
-
-
-/*void drawSquare() {
-	glBegin(GL_QUADS);
-		//glTexCoord2f(0.0, 1.0);
-		glVertex2f(-0.5, -0.5);
-		//glTexCoord2f(1.0, 1.0);
-		glVertex2f(0.5, -0.5);
-		//glTexCoord2f(1.0, 0.0);
-		glVertex2f(0.5, 0.5);
-		//glTexCoord2f(0.0, 0.0);
-		glVertex2f(-0.5, 0.5);
-	glEnd();
-}*/
 
 void drawUnfilledSquare() { // On dessine un carré vide en dessinant 4 lignes
 	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
@@ -139,33 +118,22 @@ void drawUnfilledSquare() { // On dessine un carré vide en dessinant 4 lignes
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 }
 
-void drawRaquette() { // On dessine la raquette à partir du carré vide là où se trouve la souris
+void drawCorridorBorder() {
 	glPushMatrix();
-		glColor3f(1,1,1);
-		glScalef(2.5,2.5,2.5);
-		glTranslatef(xpos/100-5, -ypos/100+4, 0.);
-		drawUnfilledSquare();
+		glScalef(16.0,9.0,1.0);
+		for (int i=0 ; i<4 ; i++) {
+			corridorBorderPos[i] += obstacleSpeed;
+			if (corridorBorderPos[i] == 0) {
+				corridorBorderPos[i] = -40;
+			}
+			glColor3f(1.0+corridorBorderPos[i]/40 , 1.0+corridorBorderPos[i]/40 , 1.0+corridorBorderPos[i]/40);
+			glPushMatrix();
+				glTranslatef(0.0,0.0,corridorBorderPos[i]);
+				drawUnfilledSquare();
+			glPopMatrix();
+		}
 	glPopMatrix();
 }
-
-void drawBall() { // On dessine la balle
-	glPushMatrix();
-		if (balle.sticky) { // Si sticky = 1, la balle est dessinée là où se trouve la souris, devant la raquette
-			balle.posX = xpos*2.5/100-12.5;
-			balle.posY = -ypos*2.5/100+10;
-			balle.posZ = -1.;
-		}
-		else { // Sinon, sa position est déterminée en fonction de sa position précédente et de sa vitesse
-			balle.posX += balle.speeX;
-			balle.posY += balle.speeY;
-			balle.posZ += balle.speeZ;
-		}
-		glColor3f(0.75,0,0);
-		glTranslatef( balle.posX , balle.posY , balle.posZ );
-		drawSphere();
-	glPopMatrix();
-}
-
 int main(int argc, char** argv) 
 {
 	/* GLFW initialisation */
@@ -222,10 +190,19 @@ int main(int argc, char** argv)
 	
 	/* Initialize variables */
 	
-	balle.sticky = 1;
-	balle.speeX = 0;
-	balle.speeY = 0;
-	balle.speeZ = 0;
+	for (int i=0 ; i<nbObstacles ; i++) {
+		srand();
+		int wall = rand()%4;
+		switch (wall) {
+			case 0 : strcpy(obstacles[i].wall,'b');
+			case 1 : strcpy(obstacles[i].wall,'t');
+			case 2 : strcpy(obstacles[i].wall,'l');
+			default : strcpy(obstacles[i].wall,'r');
+		}
+		
+		obstacles[i].pos = -10*(i+1);
+		obstacles[i].size = 1/3;
+	}
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -242,14 +219,24 @@ int main(int argc, char** argv)
 
 		/* RENDER HERE */
 		
-		glfwGetCursorPos(window, &xpos, &ypos); // On reçoit la position du curseur de la souris
+		drawCorridorBorder();
 		
 		glPushMatrix();
-			glTranslatef(0.,0.,-GL_VIEW_SIZE); // On déplace de GL_VIEW_SIZE en avant pour avoir les éléments devant la caméra
-			
-			drawBall();
-			
-			drawRaquette();
+			glScalef(16.0,9.0,1.0);
+			for (int i=0 ; i<nbObstacles ; i++) {
+				glPushMatrix();
+					switch (nbObstacles[i].wall) {
+						case 'b' : glScalef(1.0,nbObstacles[i].size,1.0);
+							   glTranslatef(0.0,-1.0,nbObstacles[i].pos);
+						case 't' : glScalef(1.0,nbObstacles[i].size,1.0);
+							   glTranslatef(0.0,1.0,nbObstacles[i].pos);
+						case 'l' : glScalef(nbObstacles[i].size,1.0,1.0);
+							   glTranslatef(-1.0,0.0,nbObstacles[i].pos);
+						case 'r' : glScalef(nbObstacles[i].size,1.0,1.0);
+							   glTranslatef(1.0,0.0,nbObstacles[i].pos);
+					}
+				glPopMatrix();
+			}
 		glPopMatrix();
 
 		/* Swap front and back buffers */
