@@ -27,7 +27,7 @@ void drawRaquette() { // On dessine la raquette à partir du carré vide là où
 	glPushMatrix();
 		glColor3f(1,1,1);
 		glScalef(2.5,2.5,2.5);
-		glTranslatef(xpos/100-5, -ypos/100+4, 0.);
+		glTranslatef(xpos/78-8.2, -ypos/78+4.7, 0.);
 		drawUnfilledSquare();
 	glPopMatrix();
 }
@@ -35,8 +35,8 @@ void drawRaquette() { // On dessine la raquette à partir du carré vide là où
 void drawBall() { // On dessine la balle
 	glPushMatrix();
 		if (balle.sticky) { // Si sticky = 1, la balle est dessinée là où se trouve la souris, devant la raquette
-			balle.posX = xpos*2.5/100-12.5;
-			balle.posY = -ypos*2.5/100+10;
+			balle.posX = xpos*2.5/78-20.5;
+			balle.posY = -ypos*2.5/78+11.5;
 			balle.posZ = -1.;
 		}
 		else { // Sinon, sa position est déterminée en fonction de sa position précédente et de sa vitesse

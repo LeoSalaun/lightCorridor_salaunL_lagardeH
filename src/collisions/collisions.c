@@ -152,6 +152,11 @@ int main(int argc, char** argv)
 	/* Initialize variables */
 	
 	initObstacle();
+	
+	balle.sticky = 1;
+	balle.speeX = 0;
+	balle.speeY = 0;
+	balle.speeZ = 0;
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
