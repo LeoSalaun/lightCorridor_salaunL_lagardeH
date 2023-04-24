@@ -157,6 +157,7 @@ int main(int argc, char** argv)
 	onWindowResized(window,WINDOW_WIDTH,WINDOW_HEIGHT);
 
 	glPointSize(4.0);
+	glEnable(GL_DEPTH_TEST);
 	
 	/* Load images */
 	/*int width, height, nb_canaux;
@@ -200,37 +201,36 @@ int main(int argc, char** argv)
 
 		/* Cleaning buffers and setting Matrix Mode */
 		glClearColor(0.0,0.0,0.0,0.0);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
 		/* RENDER HERE */
 		
-		drawCorridorBorder();
-		
-		glfwGetCursorPos(window, &xpos, &ypos); // On reçoit la position du curseur de la souris
-		
-		moveBall();
-		
-		//collCorridor();
-		
-		//collWall();
-		
-		//collRaquette();
-		
-		drawObstacles(nbObstacles-1, (balle.posZ - obstacles[0].pos)/10);
-		
-		drawBall();
-		
-		drawObstacles((balle.posZ - obstacles[0].pos)/10, 0);
-		
 		glPushMatrix();
-			glTranslatef(0.,0.,-GL_VIEW_SIZE); // On déplace de GL_VIEW_SIZE en avant pour avoir les éléments devant la caméra
+			glScalef(1./GL_VIEW_SIZE,1./GL_VIEW_SIZE,1./GL_VIEW_SIZE);
+			// On déplace de GL_VIEW_SIZE en avant pour avoir les éléments devant la caméra
+			
+			drawCorridorBorder();
+			
+			drawObstacles();
+			
+			glfwGetCursorPos(window, &xpos, &ypos); // On reçoit la position du curseur de la souris
+			
+			moveBall();
+			
+			//collCorridor();
+			
+			//collWall();
+			
+			//collRaquette();
 			
 			
 			
 			drawRaquette();
+			
+			drawBall();
 		glPopMatrix();
 
 		/* Swap front and back buffers */
