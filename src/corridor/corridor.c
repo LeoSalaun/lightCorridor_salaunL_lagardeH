@@ -10,8 +10,8 @@
 #include "3D_tools.h"
 
 /* Window properties */
-static const unsigned int WINDOW_WIDTH = 1000;
-static const unsigned int WINDOW_HEIGHT = 800;
+static const unsigned int WINDOW_WIDTH = 1280;
+static const unsigned int WINDOW_HEIGHT = 720;
 static const char WINDOW_TITLE[] = "base";
 static float aspectRatio = 1.0;
 
@@ -28,76 +28,70 @@ void onError(int error, const char *description)
 	fprintf(stderr, "GLFW Error: %s\n", description);
 }
 
-void onWindowResized(GLFWwindow* window, int width, int height)
+void onWindowResized(GLFWwindow *window, int width, int height)
 {
-	aspectRatio = width / (float) height;
+	aspectRatio = width / (float)height;
 
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60.0,aspectRatio,Z_NEAR,Z_FAR);
+	gluPerspective(60.0, aspectRatio, Z_NEAR, Z_FAR);
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
+void onKey(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
-	if (action == GLFW_PRESS) {
-		switch(key) {
-			case GLFW_KEY_A :
-			case GLFW_KEY_ESCAPE :
-				glfwSetWindowShouldClose(window, GLFW_TRUE);
-				break;
-			case GLFW_KEY_L :
-				glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-				break;
-			case GLFW_KEY_P :
-				glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-				break;
-			/*case GLFW_KEY_R :
-				flag_animate_rot_arm = 1-flag_animate_rot_arm;
-				break;
-			case GLFW_KEY_T :
-				flag_animate_rot_scale = 1-flag_animate_rot_scale;
-				break;*/
-			case GLFW_KEY_KP_9 :
-				if(dist_zoom<100.0f) dist_zoom*=1.1;
-				printf("Zoom is %f\n",dist_zoom);
-				break;
-			case GLFW_KEY_KP_3 :
-				if(dist_zoom>1.0f) dist_zoom*=0.9;
-				printf("Zoom is %f\n",dist_zoom);
-				break;
-			case GLFW_KEY_UP :
-				if (phy>2) phy -= 2;
-				printf("Phy %f\n",phy);
-				break;
-			case GLFW_KEY_DOWN :
-				if (phy<=88.) phy += 2;
-				printf("Phy %f\n",phy);
-				break;
-			case GLFW_KEY_LEFT :
-				theta -= 5;
-				break;
-			case GLFW_KEY_RIGHT :
-				theta += 5;
-				break;
-			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
+	if (action == GLFW_PRESS)
+	{
+		switch (key)
+		{
+		case GLFW_KEY_A:
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(window, GLFW_TRUE);
+			break;
+		case GLFW_KEY_L:
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			break;
+		case GLFW_KEY_P:
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			break;
+		/*case GLFW_KEY_R :
+			flag_animate_rot_arm = 1-flag_animate_rot_arm;
+			break;
+		case GLFW_KEY_T :
+			flag_animate_rot_scale = 1-flag_animate_rot_scale;
+			break;*/
+		case GLFW_KEY_KP_9:
+			if (dist_zoom < 100.0f)
+				dist_zoom *= 1.1;
+			printf("Zoom is %f\n", dist_zoom);
+			break;
+		case GLFW_KEY_KP_3:
+			if (dist_zoom > 1.0f)
+				dist_zoom *= 0.9;
+			printf("Zoom is %f\n", dist_zoom);
+			break;
+		case GLFW_KEY_UP:
+			if (phy > 2)
+				phy -= 2;
+			printf("Phy %f\n", phy);
+			break;
+		case GLFW_KEY_DOWN:
+			if (phy <= 88.)
+				phy += 2;
+			printf("Phy %f\n", phy);
+			break;
+		case GLFW_KEY_LEFT:
+			theta -= 5;
+			break;
+		case GLFW_KEY_RIGHT:
+			theta += 5;
+			break;
+		default:
+			fprintf(stdout, "Touche non gérée (%d)\n", key);
 		}
 	}
 }
-
-/*void drawSquare()
-{
-	glScalef(4, 2, 4);
-	glRotatef(90, 0, 1, 0);
-	glBegin(GL_QUADS);
-
-	glVertex3f(-3.0, -3.0, 0); // coin inférieur gauche
-	glVertex3f(3.0, -3.0, 0);  // coin inférieur droit
-	glVertex3f(3.0, 3.0, 0);   // coin supérieur droit
-	glVertex3f(-3.0, 3.0, 0);  // coin supérieur gauche
-	glEnd();
-}*/
 
 int main(int argc, char **argv)
 {
@@ -167,12 +161,42 @@ int main(int argc, char **argv)
 		glLoadIdentity();
 
 		/* RENDER HERE */
-	
+		// dessiner mur 9 gauche jaune
+		glColor3f(1, 1, 0);
 		glPushMatrix();
-			glTranslatef(0.,0.,-GL_VIEW_SIZE);
-			drawSquare();
+		glTranslatef(-8, 0., -GL_VIEW_SIZE);
+		glScalef(4.5, 9, 85);
+		glRotatef(90, 0, 1, 0);
+		drawSquare();
 		glPopMatrix();
-		
+
+		// dessiner mur 9 droit rouge
+		glColor3f(1, 0, 0);
+		glPushMatrix();
+		glTranslatef(8, 0., -GL_VIEW_SIZE);
+		glScalef(4.5, 9, 85);
+		glRotatef(90, 0, 1, 0);
+		drawSquare();
+		glPopMatrix();
+
+		// dessiner mur 16 haut bleu
+		glColor3f(0, 0, 1);
+		glPushMatrix();
+		glTranslatef(0, 4.5, -GL_VIEW_SIZE);
+		glScalef(16, 8, 85);
+		glRotatef(90, 1, 0, 0);
+		drawSquare();
+		glPopMatrix();
+
+		// dessiner mur 16 bas rose
+		glColor3f(1, 0, 1);
+		glPushMatrix();
+		glTranslatef(0, -4.5, -GL_VIEW_SIZE);
+		glScalef(16, 8, 85);
+		glRotatef(90, 1, 0, 0);
+		drawSquare();
+		glPopMatrix();
+
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
@@ -188,9 +212,9 @@ int main(int argc, char **argv)
 		}
 	}
 
-	//stbi_image_free(image);
+	// stbi_image_free(image);
 
-	//glDeleteTextures(1, &textures);
+	// glDeleteTextures(1, &textures);
 
 	glfwTerminate();
 	return 0;
