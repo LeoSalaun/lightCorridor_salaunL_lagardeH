@@ -75,6 +75,9 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 			case GLFW_KEY_RIGHT :
 				theta += 5;
 				break;
+			case GLFW_KEY_B :
+				balle.sticky = 1;
+				break;
 			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
 		}
 	}
@@ -93,6 +96,37 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     	balle.sticky = 0;
 	balle.speeZ = -5;
     }
+}
+
+void collCorridor() {
+
+}
+
+void collWall() {
+	for (int i=0 ; i<nbObstacles ; i++) {
+		if (fabs(obstacles[i].pos - balle.posZ) <= 1) {
+			int x1 = 0, x2 = 1080, y1 = 0, y2 = 720, bposX = (balle.posX+21.35)*30, bposY = (balle.posY-12)*30;
+			switch (obstacles[i].wall) {
+				case 'b' : y2 = 240;
+					   break;
+				case 't' : y1 = 480;
+					   y2 = 720;
+					   break;
+				case 'l' : x2 = 360;
+					   break;
+				case 'r' : x1 = 720;
+					   x2 = 1080;
+					   break;
+			}
+			if (bposX >= x1 && bposX <= x2 && bposY >= y1 && bposY <= y2) {
+				balle.speeZ = -balle.speeZ;
+			}
+		}
+	}
+}
+
+void collRaquette() {
+
 }
 
 int main(int argc, char** argv) 
@@ -175,14 +209,26 @@ int main(int argc, char** argv)
 		
 		drawCorridorBorder();
 		
-		drawObstacles();
-		
 		glfwGetCursorPos(window, &xpos, &ypos); // On reçoit la position du curseur de la souris
+		
+		moveBall();
+		
+		//collCorridor();
+		
+		//collWall();
+		
+		//collRaquette();
+		
+		drawObstacles(nbObstacles-1, (balle.posZ - obstacles[0].pos)/10);
+		
+		drawBall();
+		
+		drawObstacles((balle.posZ - obstacles[0].pos)/10, 0);
 		
 		glPushMatrix();
 			glTranslatef(0.,0.,-GL_VIEW_SIZE); // On déplace de GL_VIEW_SIZE en avant pour avoir les éléments devant la caméra
 			
-			drawBall();
+			
 			
 			drawRaquette();
 		glPopMatrix();

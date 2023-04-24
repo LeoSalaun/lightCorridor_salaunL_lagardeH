@@ -46,10 +46,23 @@ void initObstacle() {
 	}
 }
 
-void drawObstacles() {
+/*void moveObstacles() {
+	for (int i=nbObstacles-1 ; i>=0 ; i--) {
+		obstacles[i].pos += obstacleSpeed;
+	}
+}*/
+
+void drawObstacles(int first, int last) {
+	if (first >= nbObstacles-1) {
+		first = nbObstacles-1;
+	}
+	if (last <= 0) {
+		last = 0;
+	}
+	
 	glPushMatrix();
 		glScalef(16.0,9.0,1.0);
-		for (int i=nbObstacles-1 ; i>=0 ; i--) {
+		for (int i=first ; i>=last ; i--) {
 			obstacles[i].pos += obstacleSpeed;
 			if (obstacles[i].pos >= -40 && obstacles[i]. pos <= 0) {
 				glColor3f(1.0+obstacles[i].pos/40 , 1.0+obstacles[i].pos/40 , 1.0+obstacles[i].pos/40);

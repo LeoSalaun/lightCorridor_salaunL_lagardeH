@@ -14,4 +14,6 @@ void drawUnfilledSquare();
 
 void drawRaquette();
 
+void moveBall();
+
 void drawBall();

@@ -12,4 +12,4 @@ void drawCorridorBorder();
 
 void initObstacle();
 
-void drawObstacles();
+void drawObstacles(int first, int last);

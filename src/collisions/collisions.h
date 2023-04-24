@@ -12,3 +12,9 @@
 
 #include "../raquette/raquette.h"
 #include "../obstacles/obstacles.h"
+
+void collCorridor();
+
+void collWall();
+
+void collRaquette();

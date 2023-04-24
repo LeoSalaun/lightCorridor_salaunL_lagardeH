@@ -3,6 +3,8 @@
 
 #include "raquette.h"
 
+static const float GL_VIEW_SIZE = 20.;
+
 Ball balle;
 double xpos, ypos;
 
@@ -32,20 +34,25 @@ void drawRaquette() { // On dessine la raquette à partir du carré vide là où
 	glPopMatrix();
 }
 
+void moveBall() {
+	if (balle.sticky) { // Si sticky = 1, la balle est dessinée là où se trouve la souris, devant la raquette
+		balle.posX = xpos/30-21.35;
+		balle.posY = -ypos/30+12.;
+		balle.posZ = -1. - GL_VIEW_SIZE;
+	}
+	else { // Sinon, sa position est déterminée en fonction de sa position précédente et de sa vitesse
+		balle.posX += balle.speeX;
+		balle.posY += balle.speeY;
+		balle.posZ += balle.speeZ;
+	}
+}
+
 void drawBall() { // On dessine la balle
-	glPushMatrix();
-		if (balle.sticky) { // Si sticky = 1, la balle est dessinée là où se trouve la souris, devant la raquette
-			balle.posX = xpos*2.5/78-20.5;
-			balle.posY = -ypos*2.5/78+11.5;
-			balle.posZ = -1.;
-		}
-		else { // Sinon, sa position est déterminée en fonction de sa position précédente et de sa vitesse
-			balle.posX += balle.speeX;
-			balle.posY += balle.speeY;
-			balle.posZ += balle.speeZ;
-		}
-		glColor3f(0.75,0,0);
-		glTranslatef( balle.posX , balle.posY , balle.posZ );
-		drawSphere();
-	glPopMatrix();
+	if (balle.posZ >= -40 && balle.posZ <= 0) {
+		glPushMatrix();
+			glColor3f(/*1.0+balle.posZ/40*/ 1,0,0);
+			glTranslatef( balle.posX , balle.posY , balle.posZ );
+			drawSphere();
+		glPopMatrix();
+	}
 }
