@@ -44,7 +44,7 @@ typedef struct Ball {
 
 static Ball balle;
 
-static double xpos, ypos;;
+static double xpos, ypos;
 
 void onWindowResized(GLFWwindow* window, int width, int height)
 {
@@ -109,7 +109,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 
 
-/*void drawSquare() {
+void drawSquare() {
 	glBegin(GL_QUADS);
 		//glTexCoord2f(0.0, 1.0);
 		glVertex2f(-0.5, -0.5);
@@ -120,7 +120,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 		//glTexCoord2f(0.0, 0.0);
 		glVertex2f(-0.5, 0.5);
 	glEnd();
-}*/
+}
 
 void drawUnfilledSquare() { // On dessine un carré vide en dessinant 4 lignes
 	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
@@ -247,7 +247,7 @@ int main(int argc, char** argv)
 		glPushMatrix();
 			glTranslatef(0.,0.,-GL_VIEW_SIZE); // On déplace de GL_VIEW_SIZE en avant pour avoir les éléments devant la caméra
 			
-			drawBall(xpos, ypos);
+			drawBall();
 			
 			drawRaquette();
 		glPopMatrix();
