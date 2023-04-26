@@ -23,6 +23,7 @@ void drawCorridorBorder() {
 			glPopMatrix();
 		}
 	glPopMatrix();
+	//printf("{%f,%f,%f,%f}\n",corridorBorderPos[0],corridorBorderPos[1],corridorBorderPos[2],corridorBorderPos[3]);
 }
 
 void initObstacle() {

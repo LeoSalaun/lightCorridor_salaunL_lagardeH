@@ -22,6 +22,8 @@ extern double obstacleSpeed;
 //extern double corridorBorderPos[4] = {-10,-20,-30,-40};
 extern Obstacle obstacles[nbObstacles];
 
+int forward;
+
 /* Error handling function */
 void onError(int error, const char* description)
 {
@@ -88,10 +90,10 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && !(balle.sticky) && forward) {
     	obstacleSpeed = obstacleSpace/20;
     }
-    else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+    else if ((button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) || balle.sticky || !(forward)) {
     	obstacleSpeed = 0;
     }
     
@@ -104,31 +106,49 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 void collCorridor() {
 	if (balle.posX-1 <= 0 || balle.posX+1 >= 1280) {
 		balle.speeX = -balle.speeX;
+		balle.posX = round(balle.posX/1280)*1280;
 	}
 	if (balle.posY-1 <= 0 || balle.posY+1 >= 720) {
 		balle.speeY = -balle.speeY;
+		balle.posY = round(balle.posY/720)*720;
 	}
 }
 
 void collWall() {
+	forward = 1;
 	for (int i=0 ; i<nbObstacles ; i++) {
+		int x1 = 0, x2 = 1080, y1 = 0, y2 = 720;
+		switch (obstacles[i].wall) {
+			case 'b' : y1 = 480;
+				   y2 = 720;
+				   break;
+			case 't' : y2 = 240;
+				   break;
+			case 'l' : x2 = 360;
+				   break;
+			case 'r' : x1 = 720;
+				   x2 = 1080;
+				   break;
+		}
 		if (fabs(obstacles[i].pos - balle.posZ) <= 1) {
-			int x1 = 0, x2 = 1080, y1 = 0, y2 = 720;
-			switch (obstacles[i].wall) {
-				case 'b' : y1 = 480;
-					   y2 = 720;
-					   break;
-				case 't' : y2 = 240;
-					   break;
-				case 'l' : x2 = 360;
-					   break;
-				case 'r' : x1 = 720;
-					   x2 = 1080;
-					   break;
-			}
-			if (balle.posX >= x1 && balle.posX <= x2 && balle.posY >= y1 && balle.posY <= y2) {
+			
+			if ((fabs(obstacles[i].pos - balle.posZ) <= 1
+				&& balle.posX >= x1
+				&& balle.posX <= x2
+				&& balle.posY >= y1
+				&& balle.posY <= y2)
+			    || sqrt(pow(x1-balle.posX,2) + pow(obstacles[i].pos-balle.posZ,2)) <= 1
+			    || sqrt(pow(x2-balle.posX,2) + pow(obstacles[i].pos-balle.posZ,2)) <= 1
+			    || sqrt(pow(y1-balle.posY,2) + pow(obstacles[i].pos-balle.posZ,2)) <= 1
+			    || sqrt(pow(y2-balle.posY,2) + pow(obstacles[i].pos-balle.posZ,2)) <= 1) {
 				balle.speeZ = -balle.speeZ;
+				balle.posZ = round(balle.posZ-obstacles[i].pos) + obstacles[i].pos;
 			}
+		}
+		
+		if (obstacles[i].pos == -1.5 && (fabs(xpos - x1) <= 148 || fabs(xpos - x2) <= 148
+					      || fabs(ypos - y1) <= 148 || fabs(ypos - y2) <= 148)) {
+			forward = 0;
 		}
 	}
 }
@@ -138,6 +158,7 @@ void collRaquette() {
 		balle.speeZ = -balle.speeZ;
 		balle.speeX = -(xpos - balle.posX);
 		balle.speeY = -(ypos - balle.posY);
+		balle.posZ = -2.;
 	}
 	else if (!(balle.sticky) && balle.posZ >= -2.) {
 		balle.sticky = 1;
@@ -238,13 +259,13 @@ int main(int argc, char** argv)
 			
 			moveBall();
 			
-			collCorridor();
-			
-			collWall();
-			
-			collRaquette();
-			
-			
+			if (!(balle.sticky)) {
+				collCorridor();
+				
+				collWall();
+				
+				collRaquette();
+			}
 			
 			drawRaquette();
 			
