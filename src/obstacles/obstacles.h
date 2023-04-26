@@ -5,6 +5,8 @@ typedef struct Obstacle {
 } Obstacle;
 
 #define nbObstacles 10
+#define obstacleSpace 3.
+#define obstacleLength 4.*obstacleSpace
 
 void drawUnfilledSquare();
 

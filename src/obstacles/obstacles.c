@@ -5,18 +5,18 @@
 #include "obstacles.h"
 
 double obstacleSpeed;
-double corridorBorderPos[4] = {-10,-20,-30,-40};
+double corridorBorderPos[4] = {-obstacleSpace,-2*obstacleSpace,-3*obstacleSpace,-4*obstacleSpace};
 Obstacle obstacles[nbObstacles];
 
 void drawCorridorBorder() {
 	glPushMatrix();
-		glScalef(16.0,9.0,1.0);
+		glScalef(16./9.,1.,1.);
 		for (int i=0 ; i<4 ; i++) {
 			corridorBorderPos[i] += obstacleSpeed;
-			if (corridorBorderPos[i] == 0) {
-				corridorBorderPos[i] = -40;
+			if (corridorBorderPos[i] >= -1) {
+				corridorBorderPos[i] -= obstacleLength;
 			}
-			glColor3f(1.0+corridorBorderPos[i]/40 , 1.0+corridorBorderPos[i]/40 , 1.0+corridorBorderPos[i]/40);
+			glColor3f(1.0+corridorBorderPos[i]/(1.*obstacleLength) , 1.0+corridorBorderPos[i]/(1.*obstacleLength) , 1.0+corridorBorderPos[i]/(1.*obstacleLength));
 			glPushMatrix();
 				glTranslatef(0.0,0.0,corridorBorderPos[i]);
 				drawUnfilledSquare();
@@ -41,8 +41,8 @@ void initObstacle() {
 				 break;
 		}
 		
-		obstacles[i].pos = -10*(i+1);
-		obstacles[i].size = 1.0/3;
+		obstacles[i].pos = -obstacleSpace*(i+1);
+		obstacles[i].size = 1./3;
 	}
 }
 
@@ -54,11 +54,11 @@ void initObstacle() {
 
 void drawObstacles() {
 	glPushMatrix();
-		glScalef(16.0,9.0,1.0);
+		glScalef(16./9.,1.,1.);
 		for (int i=0 ; i<nbObstacles ; i++) {
 			obstacles[i].pos += obstacleSpeed;
-			if (obstacles[i].pos >= -40 && obstacles[i]. pos <= 0) {
-				glColor3f(1.0+obstacles[i].pos/40 , 1.0+obstacles[i].pos/40 , 1.0+obstacles[i].pos/40);
+			if (obstacles[i].pos >= -obstacleLength && obstacles[i].pos <= 0) {
+				glColor3f(1.0+obstacles[i].pos/(1.*obstacleLength) , 1.0+obstacles[i].pos/(1.*obstacleLength) , 1.0+obstacles[i].pos/(1.*obstacleLength));
 				glPushMatrix();
 					switch (obstacles[i].wall) {
 						case 'b' : glScalef(1.0,obstacles[i].size,1.0);

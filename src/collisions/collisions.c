@@ -86,7 +86,7 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-    	obstacleSpeed = 0.5;
+    	obstacleSpeed = obstacleSpace/20;
     }
     else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
     	obstacleSpeed = 0;
@@ -94,7 +94,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     
     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
     	balle.sticky = 0;
-	balle.speeZ = -5;
+	balle.speeZ = -1;
     }
 }
 
@@ -209,11 +209,11 @@ int main(int argc, char** argv)
 		/* RENDER HERE */
 		
 		glPushMatrix();
-			glScalef(1./GL_VIEW_SIZE,1./GL_VIEW_SIZE,1./GL_VIEW_SIZE);
+			glScalef(4./GL_VIEW_SIZE,4./GL_VIEW_SIZE,2./GL_VIEW_SIZE);
 			// On déplace de GL_VIEW_SIZE en avant pour avoir les éléments devant la caméra
 			
 			drawCorridorBorder();
-			
+				
 			drawObstacles();
 			
 			glfwGetCursorPos(window, &xpos, &ypos); // On reçoit la position du curseur de la souris
