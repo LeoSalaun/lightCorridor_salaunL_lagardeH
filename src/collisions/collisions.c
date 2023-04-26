@@ -77,6 +77,9 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 				break;
 			case GLFW_KEY_B :
 				balle.sticky = 1;
+				balle.speeX = 0;
+				balle.speeY = 0;
+				balle.speeZ = 0.25;
 				break;
 			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
 		}
@@ -94,23 +97,28 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     
     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
     	balle.sticky = 0;
-	balle.speeZ = -1;
+	balle.speeZ = -0.25;
     }
 }
 
 void collCorridor() {
-
+	if (balle.posX-1 <= 0 || balle.posX+1 >= 1280) {
+		balle.speeX = -balle.speeX;
+	}
+	if (balle.posY-1 <= 0 || balle.posY+1 >= 720) {
+		balle.speeY = -balle.speeY;
+	}
 }
 
 void collWall() {
 	for (int i=0 ; i<nbObstacles ; i++) {
 		if (fabs(obstacles[i].pos - balle.posZ) <= 1) {
-			int x1 = 0, x2 = 1080, y1 = 0, y2 = 720, bposX = (balle.posX+21.35)*30, bposY = (balle.posY-12)*30;
+			int x1 = 0, x2 = 1080, y1 = 0, y2 = 720;
 			switch (obstacles[i].wall) {
-				case 'b' : y2 = 240;
-					   break;
-				case 't' : y1 = 480;
+				case 'b' : y1 = 480;
 					   y2 = 720;
+					   break;
+				case 't' : y2 = 240;
 					   break;
 				case 'l' : x2 = 360;
 					   break;
@@ -118,7 +126,7 @@ void collWall() {
 					   x2 = 1080;
 					   break;
 			}
-			if (bposX >= x1 && bposX <= x2 && bposY >= y1 && bposY <= y2) {
+			if (balle.posX >= x1 && balle.posX <= x2 && balle.posY >= y1 && balle.posY <= y2) {
 				balle.speeZ = -balle.speeZ;
 			}
 		}
@@ -126,7 +134,17 @@ void collWall() {
 }
 
 void collRaquette() {
-
+	if (!(balle.sticky) && balle.posZ >= -2. && fabs(xpos - balle.posX) <= 148 && fabs(ypos - balle.posY) <= 148) {
+		balle.speeZ = -balle.speeZ;
+		balle.speeX = -(xpos - balle.posX);
+		balle.speeY = -(ypos - balle.posY);
+	}
+	else if (!(balle.sticky) && balle.posZ >= -2.) {
+		balle.sticky = 1;
+		balle.speeX = 0;
+		balle.speeY = 0;
+		balle.speeZ = 0.25;
+	}
 }
 
 int main(int argc, char** argv) 
@@ -220,11 +238,11 @@ int main(int argc, char** argv)
 			
 			moveBall();
 			
-			//collCorridor();
+			collCorridor();
 			
-			//collWall();
+			collWall();
 			
-			//collRaquette();
+			collRaquette();
 			
 			
 			
