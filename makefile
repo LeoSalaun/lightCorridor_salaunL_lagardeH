@@ -27,7 +27,7 @@ OBJ_OBS= $(GLOB_OBJ_DIR) $(OBJDIR)draw_scene.o $(OBJDIR)obstacles/obstacles.o
 EXEC_OBS= obstacles.out
 
 # Fichiers collisions
-OBJ_COL= $(OBJ_RQT) $(OBJDIR)obstacles/obstacles.o $(OBJDIR)collisions/collisions.o
+OBJ_COL= $(OBJ_CRD) $(OBJDIR)raquette/raquette.o $(OBJDIR)obstacles/obstacles.o $(OBJDIR)collisions/collisions.o
 EXEC_COL= collisions.out
 
 

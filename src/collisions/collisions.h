@@ -10,6 +10,7 @@
 #include "stb_image.h"
 #include "3D_tools.h"
 
+#include "../corridor/corridor.h"
 #include "../raquette/raquette.h"
 #include "../obstacles/obstacles.h"
 

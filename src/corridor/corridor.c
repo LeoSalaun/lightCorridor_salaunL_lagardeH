@@ -1,37 +1,39 @@
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "3D_tools.h"
 
-/* Window properties */
-static const unsigned int WINDOW_WIDTH = 1280;
-static const unsigned int WINDOW_HEIGHT = 720;
-static const char WINDOW_TITLE[] = "base";
-static float aspectRatio = 1.0;
+#include "corridor.h"
 
-/* Minimal time wanted between two images */
-static const double FRAMERATE_IN_SECONDS = 1. / 30.;
-
-/* Virtual windows space */
-// Space is defined in interval -1 and 1 on x and y axes
-static const float GL_VIEW_SIZE = 20.;
-
-/* Error handling function */
-void onError(int error, const char *description)
-{
-	fprintf(stderr, "GLFW Error: %s\n", description);
+void drawSideWall(GLuint textures) {
+	glEnable(GL_TEXTURE_2D);
+		
+	glBindTexture(GL_TEXTURE_2D, textures);
+	
+	glBegin(GL_QUADS);
+		glTexCoord2f(0.0, 1.0);
+		glVertex2f(-0.5, -0.5);
+		glTexCoord2f(1.0, 1.0);
+		glVertex2f(0.5, -0.5);
+		glTexCoord2f(1.0, 0.0);
+		glVertex2f(0.5, 0.5);
+		glTexCoord2f(0.0, 0.0);
+		glVertex2f(-0.5, 0.5);
+	glEnd();
+	
+	glBindTexture(GL_TEXTURE_2D, 0);
+		
+	glDisable(GL_TEXTURE_2D);
 }
 
-void onWindowResized(GLFWwindow *window, int width, int height)
-{
-	aspectRatio = width / (float)height;
+void drawCorridor(GLuint texturesTopBottom, GLuint texturesSides) {
+	// dessiner mur 9 gauche jaune
+	glPushMatrix();
+	glTranslatef(-8, 0., -GL_VIEW_SIZE);
+	glScalef(4.5, 9, 85);
+	glRotatef(90, 0, 1, 0);
+	drawSideWall(texturesSides);
+	glPopMatrix();
 
+<<<<<<< HEAD
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -262,4 +264,31 @@ int main(int argc, char **argv)
 
 	glfwTerminate();
 	return 0;
+=======
+	// dessiner mur 9 droit rouge
+	glPushMatrix();
+	glTranslatef(8, 0., -GL_VIEW_SIZE);
+	glScalef(4.5, 9, 85);
+	glRotatef(90, 0, 1, 0);
+	drawSideWall(texturesSides);
+	glPopMatrix();
+
+	// dessiner mur 16 haut bleu
+	glPushMatrix();
+	glTranslatef(0, 4.5, -GL_VIEW_SIZE);
+	glScalef(16, 8, 85);
+	glRotatef(90, 1, 0, 0);
+	glRotatef(-90, 0, 0, 1);
+	drawSideWall(texturesTopBottom);
+	glPopMatrix();
+
+	// dessiner mur 16 bas rose
+	glPushMatrix();
+	glTranslatef(0, -4.5, -GL_VIEW_SIZE);
+	glScalef(16, 8, 85);
+	glRotatef(90, 1, 0, 0);
+	glRotatef(-90, 0, 0, 1);
+	drawSideWall(texturesTopBottom);
+	glPopMatrix();
+>>>>>>> e10046bd51a41f4c7a110bf1131604b6a9ab218f
 }

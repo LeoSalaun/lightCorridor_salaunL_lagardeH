@@ -11,7 +11,6 @@ static const double FRAMERATE_IN_SECONDS = 1. / 30.;
 
 /* Virtual windows space */
 // Space is defined in interval -1 and 1 on x and y axes
-static const float GL_VIEW_SIZE = 20.;
 
 /* Project variables */
 
@@ -199,28 +198,50 @@ int main(int argc, char** argv)
 	glEnable(GL_DEPTH_TEST);
 	
 	/* Load images */
-	/*int width, height, nb_canaux;
-	
-	unsigned char* image = stbi_load("doc/IMAC.png",&width,&height,&nb_canaux,0);
-	
-	if (image == NULL) {
-		printf("Erreur lors du chargement de l'image !\n");
+	/* Load images */
+	int widthTopBottom, heightTopBottom, nb_canauxTopBottom, widthSides, heightSides, nb_canauxSides;
+
+	unsigned char *imageTopBottom = stbi_load("doc/plafondcorridor.png", &widthTopBottom, &heightTopBottom, &nb_canauxTopBottom, 0);
+
+	if (imageTopBottom == NULL)
+	{
+		printf("Erreur lors du chargement de l'image de plafond !\n");
 	}
-	else {
-		printf("Image correctement chargée\n");
+	else
+	{
+		printf("Image de plafond correctement chargée\n");
 	}
 	
-	GLuint textures;
+	unsigned char *imageSides = stbi_load("doc/cotecorridor.png", &widthSides, &heightSides, &nb_canauxSides, 0);
+
+	if (imageSides == NULL)
+	{
+		printf("Erreur lors du chargement de l'image de côtés !\n");
+	}
+	else
+	{
+		printf("Image de côtés correctement chargée\n");
+	}
 	
-	glGenTextures(1, &textures);
-	
-	glBindTexture(GL_TEXTURE_2D, textures);
-	
+	GLuint texturesTopBottom, texturesSides;
+
+	glGenTextures(1, &texturesTopBottom);
+
+	glBindTexture(GL_TEXTURE_2D, texturesTopBottom);
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-	
-	glBindTexture(GL_TEXTURE_2D, 0);*/
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthTopBottom, heightTopBottom, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageTopBottom);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glBindTexture(GL_TEXTURE_2D, texturesSides);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthSides, heightSides, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageSides);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 	
 	
 	/* Initialize variables */
@@ -246,6 +267,9 @@ int main(int argc, char** argv)
 		glLoadIdentity();
 
 		/* RENDER HERE */
+		
+		glColor3f(1.,1.,1.);
+		drawCorridor(texturesTopBottom, texturesSides);
 		
 		glPushMatrix();
 			glScalef(4./GL_VIEW_SIZE,4./GL_VIEW_SIZE,2./GL_VIEW_SIZE);
@@ -287,9 +311,13 @@ int main(int argc, char** argv)
 		}
 	}
 	
-	/*stbi_image_free(image);
+	stbi_image_free(imageTopBottom);
+
+	glDeleteTextures(1, &texturesTopBottom);
 	
-	glDeleteTextures(1, &textures);*/
+	stbi_image_free(imageSides);
+
+	glDeleteTextures(1, &texturesSides);
 
 	glfwTerminate();
 	return 0;
