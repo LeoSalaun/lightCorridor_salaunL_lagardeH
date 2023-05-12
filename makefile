@@ -21,6 +21,10 @@ EXEC_CRD= corridor.out
 OBJ_RQT= $(GLOB_OBJ_DIR) $(OBJDIR)draw_scene.o $(OBJDIR)raquette/raquette.o
 EXEC_RQT= raquette.out
 
+# Fichiers bonus
+OBJ_BNS= $(GLOB_OBJ_DIR) $(OBJDIR)draw_scene.o $(OBJDIR)bonus/bonus.o
+EXEC_BNS= bonus.out
+
 # Regles compilation projet
 
 all : raquette #corridor
@@ -30,6 +34,9 @@ corridor : $(OBJ_CRD)
 
 raquette : $(OBJ_RQT)
 	$(CC) $(CFLAGS) $(OBJ_RQT) -o $(BINDIR)$(EXEC_RQT) $(LDFLAGS)
+
+bonus : $(OBJ_BNS)
+	$(CC) $(CFLAGS) $(OBJ_BNS) -o $(BINDIR)$(EXEC_BNS) $(LDFLAGS)
 
 clean :
 	rm -rf *~

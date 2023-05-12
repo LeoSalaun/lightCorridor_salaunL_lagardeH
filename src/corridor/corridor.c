@@ -123,29 +123,39 @@ int main(int argc, char **argv)
 	glPointSize(4.0);
 
 	/* Load images */
-	/*int width, height, nb_canaux;
+	int width, height, nb_canaux;
 
-	unsigned char *image = stbi_load("doc/IMAC.png", &width, &height, &nb_canaux, 0);
+	unsigned char *plafondcorridor = stbi_load("src/corridor/plafondcorridor.png", &width, &height, &nb_canaux, 0);
+	unsigned char *cotecorridor = stbi_load("src/corridor/cotecorridor.png", &width, &height, &nb_canaux, 0);
 
-	if (image == NULL)
+	if (plafondcorridor == NULL)
 	{
 		printf("Erreur lors du chargement de l'image !\n");
 	}
 	else
 	{
 		printf("Image correctement chargée\n");
-	}*/
-	// GLuint textures;
+	}
+	if (cotecorridor == NULL)
+	{
+		printf("Erreur lors du chargement de l'image !\n");
+	}
+	else
+	{
+		printf("Image correctement chargée\n");
+	}
+	GLuint textures;
 
-	// glGenTextures(1, &textures);
+	glGenTextures(1, &textures);
 
-	// glBindTexture(GL_TEXTURE_2D, textures);
+	glBindTexture(GL_TEXTURE_2D, textures);
 
-	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	// glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, plafondcorridor);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, cotecorridor);
 
-	// glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -161,12 +171,21 @@ int main(int argc, char **argv)
 		glLoadIdentity();
 
 		/* RENDER HERE */
+
 		// dessiner mur 9 gauche jaune
 		glColor3f(1, 1, 0);
 		glPushMatrix();
 		glTranslatef(-8, 0., -GL_VIEW_SIZE);
 		glScalef(4.5, 9, 85);
 		glRotatef(90, 0, 1, 0);
+		// texture
+		glTexCoord2f(0, 1);
+		// texture
+		glTexCoord2f(1, 1);
+		// texture
+		glTexCoord2f(1, 0);
+		// texture
+		glTexCoord2f(0, 0);
 		drawSquare();
 		glPopMatrix();
 
@@ -176,6 +195,14 @@ int main(int argc, char **argv)
 		glTranslatef(8, 0., -GL_VIEW_SIZE);
 		glScalef(4.5, 9, 85);
 		glRotatef(90, 0, 1, 0);
+		// texture
+		glTexCoord2f(0, 1);
+		// texture
+		glTexCoord2f(1, 1);
+		// texture
+		glTexCoord2f(1, 0);
+		// texture
+		glTexCoord2f(0, 0);
 		drawSquare();
 		glPopMatrix();
 
@@ -185,15 +212,31 @@ int main(int argc, char **argv)
 		glTranslatef(0, 4.5, -GL_VIEW_SIZE);
 		glScalef(16, 8, 85);
 		glRotatef(90, 1, 0, 0);
+		// texture
+		glTexCoord2f(0, 1);
+		// texture
+		glTexCoord2f(1, 1);
+		// texture
+		glTexCoord2f(1, 0);
+		// texture
+		glTexCoord2f(0, 0);
 		drawSquare();
 		glPopMatrix();
 
 		// dessiner mur 16 bas rose
-		glColor3f(1, 0, 1);
+
 		glPushMatrix();
 		glTranslatef(0, -4.5, -GL_VIEW_SIZE);
 		glScalef(16, 8, 85);
 		glRotatef(90, 1, 0, 0);
+		// texture
+		glTexCoord2f(0, 1);
+		// texture
+		glTexCoord2f(1, 1);
+		// texture
+		glTexCoord2f(1, 0);
+		// texture
+		glTexCoord2f(0, 0);
 		drawSquare();
 		glPopMatrix();
 
@@ -212,9 +255,10 @@ int main(int argc, char **argv)
 		}
 	}
 
-	// stbi_image_free(image);
+	stbi_image_free(plafondcorridor);
+	stbi_image_free(cotecorridor);
 
-	// glDeleteTextures(1, &textures);
+	glDeleteTextures(1, &textures);
 
 	glfwTerminate();
 	return 0;
