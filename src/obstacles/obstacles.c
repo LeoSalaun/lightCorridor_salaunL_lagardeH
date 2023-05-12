@@ -82,5 +82,10 @@ void drawObstacles() {
 				glPopMatrix();
 			}
 		}
+		if (obstacles[nbObstacles-1].pos >= -3*obstacleSpace) { // Mur de fin de niveau-jeu
+			glColor3f(1.0+(obstacles[nbObstacles-1].pos-obstacleSpace)/(1.*obstacleLength) , 0. , 0.);
+			glTranslatef(0.0,0.0,obstacles[nbObstacles-1].pos-obstacleSpace);
+			drawSquare();
+		}
 	glPopMatrix();
 }

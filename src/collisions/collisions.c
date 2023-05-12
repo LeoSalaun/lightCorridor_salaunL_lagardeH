@@ -116,17 +116,17 @@ void collCorridor() {
 void collWall() {
 	forward = 1;
 	for (int i=0 ; i<nbObstacles ; i++) {
-		int x1 = 0, x2 = 1080, y1 = 0, y2 = 720;
+		int x1 = 0, x2 = 1280, y1 = 0, y2 = 720;
 		switch (obstacles[i].wall) {
 			case 'b' : y1 = 480;
 				   y2 = 720;
 				   break;
 			case 't' : y2 = 240;
 				   break;
-			case 'l' : x2 = 360;
+			case 'l' : x2 = 427;
 				   break;
-			case 'r' : x1 = 720;
-				   x2 = 1080;
+			case 'r' : x1 = 853;
+				   x2 = 1280;
 				   break;
 		}
 		if (fabs(obstacles[i].pos - balle.posZ) <= 1) {
@@ -145,8 +145,8 @@ void collWall() {
 			}
 		}
 		
-		if (obstacles[i].pos == -1.5 && (fabs(xpos - x1) <= 148 || fabs(xpos - x2) <= 148
-					      || fabs(ypos - y1) <= 148 || fabs(ypos - y2) <= 148)) {
+		printf("%f %d %d - %f %d %d - %f\n",xpos,x1,x2,(ypos-720),y1,y2,obstacles[i].pos);
+		if (obstacles[0].pos == -5. && xpos >= x1 && xpos <= x2 && (ypos-720) >= y1 && (ypos-720) <= y2) {
 			forward = 0;
 		}
 	}
@@ -166,6 +166,8 @@ void collRaquette() {
 		balle.speeZ = 0.25;
 	}
 }
+
+void collRaquetteWall();
 
 int main(int argc, char** argv) 
 {
