@@ -24,7 +24,7 @@ void drawSideWall(GLuint textures) {
 	glDisable(GL_TEXTURE_2D);
 }
 
-void drawCorridor(GLuint texturesTopBottom, GLuint texturesSides) {
+void drawCorridor(GLuint texturesTop, GLuint texturesBottom, GLuint texturesSides) {
 	// dessiner mur 9 gauche jaune
 	glPushMatrix();
 	glTranslatef(-8, 0., -GL_VIEW_SIZE);
@@ -47,7 +47,7 @@ void drawCorridor(GLuint texturesTopBottom, GLuint texturesSides) {
 	glScalef(16, 8, 85);
 	glRotatef(90, 1, 0, 0);
 	glRotatef(-90, 0, 0, 1);
-	drawSideWall(texturesTopBottom);
+	drawSideWall(texturesTop);
 	glPopMatrix();
 
 	// dessiner mur 16 bas rose
@@ -56,6 +56,6 @@ void drawCorridor(GLuint texturesTopBottom, GLuint texturesSides) {
 	glScalef(16, 8, 85);
 	glRotatef(90, 1, 0, 0);
 	glRotatef(-90, 0, 0, 1);
-	drawSideWall(texturesTopBottom);
+	drawSideWall(texturesBottom);
 	glPopMatrix();
 }

@@ -7,7 +7,7 @@ static const char WINDOW_TITLE[] = "TD04 Ex01";
 static float aspectRatio = 1.0;
 
 /* Minimal time wanted between two images */
-static const double FRAMERATE_IN_SECONDS = 1. / 30.;
+static const double FRAMERATE_IN_SECONDS = 1. / 120.;
 
 /* Virtual windows space */
 // Space is defined in interval -1 and 1 on x and y axes
@@ -80,7 +80,7 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 				balle.sticky = 1;
 				balle.speeX = 0;
 				balle.speeY = 0;
-				balle.speeZ = 0.25;
+				balle.speeZ = -0.05;
 				break;
 			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
 		}
@@ -90,7 +90,7 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && !(balle.sticky) && forward) {
-    	obstacleSpeed = obstacleSpace/20;
+    	obstacleSpeed = obstacleSpace/80;
     }
     else if ((button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) || balle.sticky || !(forward)) {
     	obstacleSpeed = 0;
@@ -98,18 +98,18 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     
     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
     	balle.sticky = 0;
-	balle.speeZ = -0.25;
+	balle.speeZ = -0.05;
     }
 }
 
 void collCorridor() {
 	if (balle.posX-1 <= 0 || balle.posX+1 >= 1280) {
 		balle.speeX = -balle.speeX;
-		balle.posX = round(balle.posX/1280)*1280;
+		//balle.posX = round(balle.posX/1280)*1280;
 	}
 	if (balle.posY-1 <= 0 || balle.posY+1 >= 720) {
 		balle.speeY = -balle.speeY;
-		balle.posY = round(balle.posY/720)*720;
+		//balle.posY = round(balle.posY/720)*720;
 	}
 }
 
@@ -155,8 +155,8 @@ void collWall() {
 void collRaquette() {
 	if (!(balle.sticky) && balle.posZ >= -2. && fabs(xpos - balle.posX) <= 148 && fabs(ypos - balle.posY) <= 148) {
 		balle.speeZ = -balle.speeZ;
-		balle.speeX = -(xpos - balle.posX);
-		balle.speeY = -(ypos - balle.posY);
+		balle.speeX = (xpos - balle.posX)*balle.speeZ;
+		balle.speeY = (ypos - balle.posY)*balle.speeZ;
 		balle.posZ = -2.;
 	}
 	else if (!(balle.sticky) && balle.posZ >= -2.) {
@@ -201,17 +201,28 @@ int main(int argc, char** argv)
 	
 	/* Load images */
 	/* Load images */
-	int widthTopBottom, heightTopBottom, nb_canauxTopBottom, widthSides, heightSides, nb_canauxSides;
+	int widthTop, heightTop, nb_canauxTop, widthBottom, heightBottom, nb_canauxBottom, widthSides, heightSides, nb_canauxSides;
 
-	unsigned char *imageTopBottom = stbi_load("doc/plafondcorridor.png", &widthTopBottom, &heightTopBottom, &nb_canauxTopBottom, 0);
+	unsigned char *imageTop = stbi_load("doc/plafondcorridor.png", &widthTop, &heightTop, &nb_canauxTop, 0);
 
-	if (imageTopBottom == NULL)
+	if (imageTop == NULL)
 	{
 		printf("Erreur lors du chargement de l'image de plafond !\n");
 	}
 	else
 	{
 		printf("Image de plafond correctement chargée\n");
+	}
+	
+	unsigned char *imageBottom = stbi_load("doc/solcorridor.png", &widthBottom, &heightBottom, &nb_canauxBottom, 0);
+
+	if (imageBottom == NULL)
+	{
+		printf("Erreur lors du chargement de l'image de sol !\n");
+	}
+	else
+	{
+		printf("Image de sol correctement chargée\n");
 	}
 	
 	unsigned char *imageSides = stbi_load("doc/cotecorridor.png", &widthSides, &heightSides, &nb_canauxSides, 0);
@@ -225,17 +236,33 @@ int main(int argc, char** argv)
 		printf("Image de côtés correctement chargée\n");
 	}
 	
-	GLuint texturesTopBottom, texturesSides;
+	GLuint texturesTop, texturesBottom, texturesSides;
 
-	glGenTextures(1, &texturesTopBottom);
+	glGenTextures(1, &texturesTop);
 
-	glBindTexture(GL_TEXTURE_2D, texturesTopBottom);
+	glBindTexture(GL_TEXTURE_2D, texturesTop);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthTopBottom, heightTopBottom, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageTopBottom);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthTop, heightTop, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageTop);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	
+	
+	glGenTextures(1, &texturesBottom);
+
+	glBindTexture(GL_TEXTURE_2D, texturesBottom);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthBottom, heightBottom, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageBottom);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	
+	
+	glGenTextures(1, &texturesSides);
 
 	glBindTexture(GL_TEXTURE_2D, texturesSides);
 
@@ -271,7 +298,7 @@ int main(int argc, char** argv)
 		/* RENDER HERE */
 		
 		glColor3f(1.,1.,1.);
-		drawCorridor(texturesTopBottom, texturesSides);
+		drawCorridor(texturesTop, texturesBottom, texturesSides);
 		
 		glPushMatrix();
 			glScalef(4./GL_VIEW_SIZE,4./GL_VIEW_SIZE,2./GL_VIEW_SIZE);
@@ -313,9 +340,17 @@ int main(int argc, char** argv)
 		}
 	}
 	
-	stbi_image_free(imageTopBottom);
+	stbi_image_free(imageTop);
 
-	glDeleteTextures(1, &texturesTopBottom);
+	glDeleteTextures(1, &texturesTop);
+	
+	
+	
+	stbi_image_free(imageBottom);
+
+	glDeleteTextures(1, &texturesBottom);
+	
+	
 	
 	stbi_image_free(imageSides);
 

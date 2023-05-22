@@ -2,4 +2,4 @@
 
 void drawSideWall(GLuint textures);
 
-void drawCorridor(GLuint texturesTopBottom, GLuint texturesSides);
+void drawCorridor(GLuint texturesTop, GLuint texturesBottom, GLuint texturesSides);
