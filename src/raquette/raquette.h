@@ -16,4 +16,4 @@ void drawRaquette();
 
 void moveBall();
 
-void drawBall();
+void drawBall(GLuint textures);

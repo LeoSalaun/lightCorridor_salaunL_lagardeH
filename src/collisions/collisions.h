@@ -13,9 +13,13 @@
 #include "../corridor/corridor.h"
 #include "../raquette/raquette.h"
 #include "../obstacles/obstacles.h"
+#include "../bonus/bonus.h"
+#include "../interface/interface.h"
 
 void collCorridor();
 
 void collWall();
 
-void collRaquette();
+void collRaquette(GLFWwindow* window);
+
+void collBonus();

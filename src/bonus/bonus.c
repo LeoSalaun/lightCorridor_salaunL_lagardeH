@@ -1,202 +1,136 @@
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#define STB_IMAGE_IMPLEMENTATION
+#include <time.h>
 #include "stb_image.h"
 #include "3D_tools.h"
 
-/* Window properties */
-static const unsigned int WINDOW_WIDTH = 1280;
-static const unsigned int WINDOW_HEIGHT = 720;
-static const char WINDOW_TITLE[] = "base";
-static float aspectRatio = 1.0;
+#include "bonus.h"
 
-/* Minimal time wanted between two images */
-static const double FRAMERATE_IN_SECONDS = 1. / 30.;
+int rotateAngle;
 
-/* Virtual windows space */
-// Space is defined in interval -1 and 1 on x and y axes
-static const float GL_VIEW_SIZE = 20.;
+Bonus bonus[NB_BONUS];
 
-/* Error handling function */
-void onError(int error, const char *description)
-{
-    fprintf(stderr, "GLFW Error: %s\n", description);
-}
+extern double obstacleSpeed;
 
-void onWindowResized(GLFWwindow *window, int width, int height)
-{
-    aspectRatio = width / (float)height;
-
-    glViewport(0, 0, width, height);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(60.0, aspectRatio, Z_NEAR, Z_FAR);
-    glMatrixMode(GL_MODELVIEW);
-}
-
-void onKey(GLFWwindow *window, int key, int scancode, int action, int mods)
-{
-    if (action == GLFW_PRESS)
-    {
-        switch (key)
-        {
-        case GLFW_KEY_A:
-        case GLFW_KEY_ESCAPE:
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
-            break;
-        case GLFW_KEY_L:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            break;
-        case GLFW_KEY_P:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            break;
-        /*case GLFW_KEY_R :
-            flag_animate_rot_arm = 1-flag_animate_rot_arm;
-            break;
-        case GLFW_KEY_T :
-            flag_animate_rot_scale = 1-flag_animate_rot_scale;
-            break;*/
-        case GLFW_KEY_KP_9:
-            if (dist_zoom < 100.0f)
-                dist_zoom *= 1.1;
-            printf("Zoom is %f\n", dist_zoom);
-            break;
-        case GLFW_KEY_KP_3:
-            if (dist_zoom > 1.0f)
-                dist_zoom *= 0.9;
-            printf("Zoom is %f\n", dist_zoom);
-            break;
-        case GLFW_KEY_UP:
-            if (phy > 2)
-                phy -= 2;
-            printf("Phy %f\n", phy);
-            break;
-        case GLFW_KEY_DOWN:
-            if (phy <= 88.)
-                phy += 2;
-            printf("Phy %f\n", phy);
-            break;
-        case GLFW_KEY_LEFT:
-            theta -= 5;
-            break;
-        case GLFW_KEY_RIGHT:
-            theta += 5;
-            break;
-        default:
-            fprintf(stdout, "Touche non gérée (%d)\n", key);
-        }
-    }
-}
-
-int main(int argc, char **argv)
-{
-    /* GLFW initialisation */
-    GLFWwindow *window;
-    if (!glfwInit())
-        return -1;
-
-    /* Callback to a function if an error is rised by GLFW */
-    glfwSetErrorCallback(onError);
-
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
-    if (!window)
-    {
-        // If no context created : exit !
-        glfwTerminate();
-        return -1;
-    }
-
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-
-    glfwSetWindowSizeCallback(window, onWindowResized);
-    glfwSetKeyCallback(window, onKey);
-
-    onWindowResized(window, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-    glPointSize(4.0);
-
-    /* Load images */
-    // int width, height, nb_canaux;
-
-    // unsigned char *plafondcorridor = stbi_load("src/corridor/plafondcorridor.png", &width, &height, &nb_canaux, 0);
-    // unsigned char *cotecorridor = stbi_load("src/corridor/cotecorridor.png", &width, &height, &nb_canaux, 0);
-
-    // if (plafondcorridor == NULL)
-    // {
-    //     printf("Erreur lors du chargement de l'image !\n");
-    // }
-    // else
-    // {
-    //     printf("Image correctement chargée\n");
-    // }
-    // if (cotecorridor == NULL)
-    // {
-    //     printf("Erreur lors du chargement de l'image !\n");
-    // }
-    // else
-    // {
-    //     printf("Image correctement chargée\n");
-    // }
-    // GLuint textures;
-
-    // glGenTextures(1, &textures);
-
-    // glBindTexture(GL_TEXTURE_2D, textures);
-
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, plafondcorridor);
-    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, cotecorridor);
-
-    // glBindTexture(GL_TEXTURE_2D, 0);
-
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
-        /* Get time (in second) at loop beginning */
-        double startTime = glfwGetTime();
-
-        /* Cleaning buffers and setting Matrix Mode */
-        glClearColor(0.5, 0.5, 0.5, 0.0);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-
-        //! /* RENDER HERE */!//
-        glPushMatrix();
-        glColor3f(0, 0, 1);
-        glTranslatef(0, 0, -GL_VIEW_SIZE);
-        glScalef(2, 2, 2);
-        drawSphere();
+void drawBonusLife() {
+	glPushMatrix();
+        	glColor3f(0.,1.,0.);
+        	glRotatef(rotateAngle,0.,1.,0.);
+        	glPushMatrix();
+        		glScalef(4./5,4./5,2./5);
+        		glTranslatef(0.,-1./10,0.);
+        		drawSphere();
+        	glPopMatrix();
+        	glPushMatrix();
+        		glScalef(1./5,1.,1./5);
+        		glRotatef(-90,1.,0.,0.);
+        		drawCylinder();
+        	glPopMatrix();
+        	glPushMatrix();
+        		glScalef(3./10,1./5,3./10);
+        		glTranslatef(0.,4.,0.);
+        		glRotatef(-90,1.,0.,0.);
+        		drawCylinder();
+        	glPopMatrix();
+        	glPushMatrix();
+        		glScalef(3./10,1./5,3./10);
+        		glTranslatef(0.,4.,0.);
+        		glRotatef(-90,1.,0.,0.);
+        		drawCircle();
+        	glPopMatrix();
+        	glColor3f(0.5,0.2,0.);
+        	glPushMatrix();
+        		glScalef(1./5,1./5,1./5);
+        		glTranslatef(0.,5.,0.);
+        		glRotatef(-90,1.,0.,0.);
+        		drawCylinder();
+        	glPopMatrix();
+        	glPushMatrix();
+        		glScalef(1./5,1./5,1./5);
+        		glTranslatef(0.,5.,0.);
+        		glRotatef(-90,1.,0.,0.);
+        		drawCircle();
+        	glPopMatrix();
         glPopMatrix();
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+}
 
-        /* Poll for and process events */
-        glfwPollEvents();
+void drawBonusStickyFace() {
+	glPushMatrix();
+        	glTranslatef(-1.,-1.,0.);
+       		glScalef(2.,2.,1.);
+        	glBegin(GL_LINES);
+        		glVertex3f(0., 1., 0.);
+			glVertex3f(1., 0., 0.);
+			
+			glVertex3f(0., 0., 0.);
+			glVertex3f(1., 1., 0.);
+			
+			glVertex3f(0., 0.5, 0.);
+			glVertex3f(1., 0.5, 0.);
+        	glEnd();
+        glPopMatrix();
+        glScalef(3./4,3./4,1.);
+        drawUnfilledCircle();
+        glScalef(2./4,2./4,1.);
+        drawUnfilledCircle();
+        glScalef(1./4,1./4,1.);
+        drawUnfilledCircle();
+}
 
-        /* Elapsed time computation from loop begining */
-        double elapsedTime = glfwGetTime() - startTime;
-        /* If to few time is spend vs our wanted FPS, we wait */
-        if (elapsedTime < FRAMERATE_IN_SECONDS)
-        {
-            glfwWaitEventsTimeout(FRAMERATE_IN_SECONDS - elapsedTime);
-        }
-    }
+void drawBonusSticky() {
+	glPushMatrix();
+        	//glTranslatef(0.,0.,-GL_VIEW_SIZE/3);
+        	glColor3f(1.,1.,1.);
+        	glRotatef(rotateAngle,0.,1.,0.);
+        	glPushMatrix();
+        		glRotatef(45,0.,1.,0.);
+        		drawBonusStickyFace();
+        	glPopMatrix();
+        	glPushMatrix();
+        		glRotatef(135,0.,1.,0.);
+        		drawBonusStickyFace();
+        	glPopMatrix();
+        	glTranslatef(-1.,-1.,0.);
+        	glScalef(2.,2.,1.);
+        	glBegin(GL_LINES);
+        		glVertex3f(0.5, 1., 0.);
+			glVertex3f(0.5, 0., 0.);
+        	glEnd();
+        glPopMatrix();
+}
 
-    // stbi_image_free(plafondcorridor);
-    // stbi_image_free(cotecorridor);
+void initBonus() {
+	srand(time( NULL ));
+	for (int i=0 ; i<NB_BONUS ; i++) {
+		bonus[i].type = rand()%2;
+		bonus[i].posX = rand()%920+180;
+		bonus[i].posY = 720-(rand()%380+170);
+		bonus[i].posZ = -(rand()%2+i*6+1);
+		bonus[i].visible = 1;
+	}
+}
 
-    // glDeleteTextures(1, &textures);
+void moveBonus() {
+	for (int i=0 ; i<NB_BONUS ; i++) {
+		bonus[i].posZ += obstacleSpeed;
+	}
+}
 
-    glfwTerminate();
-    return 0;
+void drawBonus() {
+	glPushMatrix();
+		glScalef(1./1280,1./1280,1.);
+		for (int i=0 ; i<NB_BONUS ; i++) {
+			if (bonus[i].visible) {
+				glPushMatrix();
+					//glTranslatef(*3/4-12,*3/4-6.75,bonus[i].posZ);
+					glTranslatef(bonus[i].posX-640,bonus[i].posY-640,bonus[i].posZ);
+					glScalef(128.,128.,1.);
+					switch (bonus[i].type) {
+						case 0 : drawBonusLife();
+							 break;
+						case 1 : drawBonusSticky();
+							 break;
+					}
+				glPopMatrix();
+			}
+		}
+	glPopMatrix();
 }

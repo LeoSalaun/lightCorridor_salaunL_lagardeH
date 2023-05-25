@@ -26,8 +26,16 @@ EXEC_RQT= raquette.out
 OBJ_OBS= $(GLOB_OBJ_DIR) $(OBJDIR)draw_scene.o $(OBJDIR)obstacles/obstacles.o
 EXEC_OBS= obstacles.out
 
+# Fichiers bonus
+OBJ_BNS= $(GLOB_OBJ_DIR) $(OBJDIR)draw_scene.o $(OBJDIR)bonus/bonus.o
+EXEC_BNS= bonus.out
+
+# Fichiers interface
+OBJ_INT= $(GLOB_OBJ_DIR) $(OBJDIR)draw_scene.o $(OBJDIR)interface/interface.o
+EXEC_INT= interface.out
+
 # Fichiers collisions
-OBJ_COL= $(OBJ_CRD) $(OBJDIR)raquette/raquette.o $(OBJDIR)obstacles/obstacles.o $(OBJDIR)collisions/collisions.o
+OBJ_COL= $(OBJ_CRD) $(OBJDIR)raquette/raquette.o $(OBJDIR)obstacles/obstacles.o $(OBJDIR)bonus/bonus.o $(OBJDIR)interface/interface.o $(OBJDIR)collisions/collisions.o
 EXEC_COL= collisions.out
 
 
@@ -41,9 +49,14 @@ corridor : $(OBJ_CRD)
 raquette : $(OBJ_RQT)
 	$(CC) $(CFLAGS) $(OBJ_RQT) -o $(BINDIR)$(EXEC_RQT) $(LDFLAGS)
 
-
 obstacles : $(OBJ_OBS)
 	$(CC) $(CFLAGS) $(OBJ_OBS) -o $(BINDIR)$(EXEC_OBS) $(LDFLAGS)
+
+bonus : $(OBJ_BNS)
+	$(CC) $(CFLAGS) $(OBJ_BNS) -o $(BINDIR)$(EXEC_BNS) $(LDFLAGS)
+
+interface : $(OBJ_INT)
+	$(CC) $(CFLAGS) $(OBJ_INT) -o $(BINDIR)$(EXEC_INT) $(LDFLAGS)
 
 collisions : $(OBJ_COL)
 	$(CC) $(CFLAGS) $(OBJ_COL) -o $(BINDIR)$(EXEC_COL) $(LDFLAGS)

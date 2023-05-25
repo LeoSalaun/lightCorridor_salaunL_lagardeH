@@ -4,9 +4,9 @@ typedef struct Obstacle {
 	char wall;
 } Obstacle;
 
-#define nbObstacles 10
-#define obstacleSpace 3.
-#define obstacleLength 4.*obstacleSpace
+#define NB_OBSTACLES 10
+#define OBSTACLE_SPACE 3.
+#define OBSTACLE_LENGTH 4.*OBSTACLE_SPACE
 
 void drawUnfilledSquare();
 
@@ -14,4 +14,4 @@ void drawCorridorBorder();
 
 void initObstacle();
 
-void drawObstacles();
+void drawObstacles(GLuint textures);

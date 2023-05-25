@@ -1,5 +1,5 @@
 #define GL_VIEW_SIZE 20.
 
-void drawSideWall(GLuint textures);
+void drawSquareTexture(GLuint textures);
 
 void drawCorridor(GLuint texturesTop, GLuint texturesBottom, GLuint texturesSides);

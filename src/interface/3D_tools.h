@@ -8,7 +8,6 @@
 #include <math.h>
 
 #define NB_SEG_CIRCLE 64
-#define NB_SEG_CYLINDER 64
 
 /* Camera parameters and functions */
 static const float Z_NEAR = 0.1f;
@@ -23,10 +22,6 @@ void setCamera();
 void drawSquare();
 
 void drawCircle();
-
-void drawUnfilledCircle();
-
-void drawCylinder();
 
 void drawCone();
 

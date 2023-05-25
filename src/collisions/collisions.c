@@ -19,9 +19,12 @@ extern double xpos, ypos;
 
 extern double obstacleSpeed;
 //extern double corridorBorderPos[4] = {-10,-20,-30,-40};
-extern Obstacle obstacles[nbObstacles];
+extern Obstacle obstacles[NB_OBSTACLES];
 
-int forward;
+extern int rotateAngle;
+extern Player player;
+
+extern Bonus bonus[NB_BONUS];
 
 /* Error handling function */
 void onError(int error, const char* description)
@@ -89,10 +92,10 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && !(balle.sticky) && forward) {
-    	obstacleSpeed = obstacleSpace/80;
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && !(balle.sticky) && player.forward) {
+    	obstacleSpeed = OBSTACLE_SPACE/80;
     }
-    else if ((button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) || balle.sticky || !(forward)) {
+    else if ((button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) || balle.sticky || !(player.forward)) {
     	obstacleSpeed = 0;
     }
     
@@ -114,8 +117,7 @@ void collCorridor() {
 }
 
 void collWall() {
-	forward = 1;
-	for (int i=0 ; i<nbObstacles ; i++) {
+	for (int i=0 ; i<NB_OBSTACLES ; i++) {
 		int x1 = 0, x2 = 1280, y1 = 0, y2 = 720;
 		switch (obstacles[i].wall) {
 			case 'b' : y1 = 480;
@@ -131,7 +133,7 @@ void collWall() {
 		}
 		if (fabs(obstacles[i].pos - balle.posZ) <= 1) {
 			
-			if ((fabs(obstacles[i].pos - balle.posZ) <= 1
+			if ((fabs(obstacles[i].pos - balle.posZ) <= 0.5
 				&& balle.posX >= x1
 				&& balle.posX <= x2
 				&& balle.posY >= y1
@@ -141,33 +143,57 @@ void collWall() {
 			    || sqrt(pow(y1-balle.posY,2) + pow(obstacles[i].pos-balle.posZ,2)) <= 1
 			    || sqrt(pow(y2-balle.posY,2) + pow(obstacles[i].pos-balle.posZ,2)) <= 1) {
 				balle.speeZ = -balle.speeZ;
-				balle.posZ = round(balle.posZ-obstacles[i].pos) + obstacles[i].pos;
+				//balle.posZ = round(balle.posZ-obstacles[i].pos) + obstacles[i].pos;
 			}
 		}
 		
-		printf("%f %d %d - %f %d %d - %f\n",xpos,x1,x2,(ypos-720),y1,y2,obstacles[i].pos);
-		if (obstacles[0].pos == -5. && xpos >= x1 && xpos <= x2 && (ypos-720) >= y1 && (ypos-720) <= y2) {
-			forward = 0;
+		//printf("%f %d %d - %f %d %d - %f\n",xpos,x1,x2,(ypos-720),y1,y2,obstacles[i].pos);
+		if (obstacles[i].pos >= -1.8 && obstacles[i].pos <= -1.7 && xpos >= x1 && xpos <= x2 && ypos >= y1 && ypos <= y2) {
+			player.forward = 0;
 		}
 	}
+	printf("%f - %f - %f\n",xpos,(ypos-720),obstacles[0].pos);
 }
 
-void collRaquette() {
-	if (!(balle.sticky) && balle.posZ >= -2. && fabs(xpos - balle.posX) <= 148 && fabs(ypos - balle.posY) <= 148) {
+void collRaquette(GLFWwindow* window) {
+	if (!(balle.sticky) && balle.posZ >= -0.5 && fabs(xpos - balle.posX) <= 148 && fabs(ypos - balle.posY) <= 148) {
 		balle.speeZ = -balle.speeZ;
 		balle.speeX = (xpos - balle.posX)*balle.speeZ;
 		balle.speeY = (ypos - balle.posY)*balle.speeZ;
-		balle.posZ = -2.;
+		balle.posZ = -0.6;
 	}
-	else if (!(balle.sticky) && balle.posZ >= -2.) {
+	else if (!(balle.sticky) && balle.posZ >= -0.5) {
 		balle.sticky = 1;
 		balle.speeX = 0;
 		balle.speeY = 0;
 		balle.speeZ = 0.25;
+		player.nbVies--;
+		if (player.nbVies == 0) {
+			glfwSetWindowShouldClose(window, GLFW_TRUE);
+		}
+	}
+	if (obstacles[NB_OBSTACLES-1].pos-OBSTACLE_SPACE >= -0.5) {
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
 	}
 }
 
-void collRaquetteWall();
+void collBonus() {
+	for (int i=0 ; i<NB_BONUS ; i++) {
+		printf("%d -> %f %f %f\n",i,bonus[i].posX,bonus[i].posY,bonus[i].posZ);
+		printf("%f %f\n",xpos,ypos);
+		if (bonus[i].visible
+		    && bonus[i].posZ <= -1. && bonus[i].posZ >= -1.5
+		    && sqrt(pow(xpos-bonus[i].posX,2) + pow(ypos-bonus[i].posY,2)) <= 20) {
+			bonus[i].visible = 0;
+			switch (bonus[i].type) {
+				case 0 : player.nbVies++;
+					 break;
+				case 1 : balle.sticky = 1;
+					 break;
+			}
+		}
+	}
+}
 
 int main(int argc, char** argv) 
 {
@@ -200,8 +226,8 @@ int main(int argc, char** argv)
 	glEnable(GL_DEPTH_TEST);
 	
 	/* Load images */
-	/* Load images */
-	int widthTop, heightTop, nb_canauxTop, widthBottom, heightBottom, nb_canauxBottom, widthSides, heightSides, nb_canauxSides;
+	
+	int widthTop, heightTop, nb_canauxTop, widthBottom, heightBottom, nb_canauxBottom, widthSides, heightSides, nb_canauxSides, widthVie, heightVie, nb_canauxVie, widthSticky, heightSticky, nb_canauxSticky, widthBall, heightBall, nb_canauxBall;
 
 	unsigned char *imageTop = stbi_load("doc/plafondcorridor.png", &widthTop, &heightTop, &nb_canauxTop, 0);
 
@@ -235,8 +261,45 @@ int main(int argc, char** argv)
 	{
 		printf("Image de côtés correctement chargée\n");
 	}
+
+	unsigned char *imageVie = stbi_load("doc/vie.png", &widthVie, &heightVie, &nb_canauxVie, 0);
+
+	if (imageVie == NULL)
+	{
+		printf("Erreur lors du chargement de l'image de vie !\n");
+	}
+	else
+	{
+		printf("Image de vie correctement chargée\n");
+	}
 	
-	GLuint texturesTop, texturesBottom, texturesSides;
+	unsigned char *imageSticky = stbi_load("doc/web.png", &widthSticky, &heightSticky, &nb_canauxSticky, 0);
+
+	if (imageSticky == NULL)
+	{
+		printf("Erreur lors du chargement de l'image de toile !\n");
+	}
+	else
+	{
+		printf("Image de toile correctement chargée\n");
+	}
+	
+	unsigned char *imageBall = stbi_load("doc/pearl.png", &widthBall, &heightBall, &nb_canauxBall, 0);
+
+	if (imageBall == NULL)
+	{
+		printf("Erreur lors du chargement de l'image de balle !\n");
+	}
+	else
+	{
+		printf("Image de balle correctement chargée\n");
+	}
+	
+	
+	
+	GLuint texturesTop, texturesBottom, texturesSides, texturesVie, texturesSticky, texturesBall;
+	
+	
 
 	glGenTextures(1, &texturesTop);
 
@@ -273,14 +336,62 @@ int main(int argc, char** argv)
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
 	
+
+	glGenTextures(1, &texturesVie);
+
+	glBindTexture(GL_TEXTURE_2D, texturesVie);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthVie, heightVie, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageVie);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	
+	
+	glGenTextures(1, &texturesSticky);
+
+	glBindTexture(GL_TEXTURE_2D, texturesSticky);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthSticky, heightSticky, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageSticky);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	
+	
+	glGenTextures(1, &texturesBall);
+
+	glBindTexture(GL_TEXTURE_2D, texturesBall);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthBall, heightBall, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageBall);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	
+	
+	glEnable(GL_BLEND);
+	
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	
 	/* Initialize variables */
 	
 	initObstacle();
+	initBonus();
 	
 	balle.sticky = 1;
 	balle.speeX = 0;
 	balle.speeY = 0;
 	balle.speeZ = 0;
+	
+	player.nbVies = 3;
+	player.sticky = 0;
+	
+	rotateAngle = 0;
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -296,19 +407,26 @@ int main(int argc, char** argv)
 		glLoadIdentity();
 
 		/* RENDER HERE */
+			
+		glfwGetCursorPos(window, &xpos, &ypos); // On reçoit la position du curseur de la souris
+		
+		player.forward = 1;
 		
 		glColor3f(1.,1.,1.);
 		drawCorridor(texturesTop, texturesBottom, texturesSides);
 		
 		glPushMatrix();
-			glScalef(4./GL_VIEW_SIZE,4./GL_VIEW_SIZE,2./GL_VIEW_SIZE);
-			// On déplace de GL_VIEW_SIZE en avant pour avoir les éléments devant la caméra
+			glScalef(6./GL_VIEW_SIZE,6./GL_VIEW_SIZE,2./GL_VIEW_SIZE);
+			glTranslatef(0.,0.,-20.);
+			glScalef(20.,20.,20.);
 			
 			drawCorridorBorder();
 				
-			drawObstacles();
+			drawObstacles(texturesSides);
 			
-			glfwGetCursorPos(window, &xpos, &ypos); // On reçoit la position du curseur de la souris
+			moveBonus();
+			
+			drawBonus();
 			
 			moveBall();
 			
@@ -317,13 +435,23 @@ int main(int argc, char** argv)
 				
 				collWall();
 				
-				collRaquette();
+				collRaquette(window);
 			}
 			
-			drawRaquette();
+			collBonus();
 			
-			drawBall();
+			drawBall(texturesBall);
 		glPopMatrix();
+			
+		drawRaquette();
+		
+		drawInterface(texturesVie, texturesSticky);
+		
+		
+		rotateAngle+=ROTATE_SPEED;
+		if (rotateAngle == 360) {
+			rotateAngle = 0;
+		}
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -355,6 +483,28 @@ int main(int argc, char** argv)
 	stbi_image_free(imageSides);
 
 	glDeleteTextures(1, &texturesSides);
+	
+	
+	
+	stbi_image_free(imageVie);
+
+	glDeleteTextures(1, &texturesVie);
+	
+	
+	
+	stbi_image_free(imageSticky);
+
+	glDeleteTextures(1, &texturesSticky);
+	
+	
+	
+	stbi_image_free(imageBall);
+
+	glDeleteTextures(1, &texturesBall);
+	
+	
+	
+	glDisable(GL_BLEND);
 
 	glfwTerminate();
 	return 0;
