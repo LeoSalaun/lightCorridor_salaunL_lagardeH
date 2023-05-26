@@ -16,6 +16,8 @@
 #include "../bonus/bonus.h"
 #include "../interface/interface.h"
 
+void handleRightMouseButton();
+
 void collCorridor();
 
 void collWall();

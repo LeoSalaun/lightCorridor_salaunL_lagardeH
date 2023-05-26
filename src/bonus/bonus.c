@@ -101,9 +101,9 @@ void initBonus() {
 	srand(time( NULL ));
 	for (int i=0 ; i<NB_BONUS ; i++) {
 		bonus[i].type = rand()%2;
-		bonus[i].posX = rand()%920+180;
-		bonus[i].posY = 720-(rand()%380+170);
-		bonus[i].posZ = -(rand()%2+i*6+1);
+		bonus[i].posX = rand()%720+280;
+		bonus[i].posY = 720-(rand()%380);
+		bonus[i].posZ = -(rand()%2+i*6+7);
 		bonus[i].visible = 1;
 	}
 }

@@ -44,14 +44,14 @@ void initObstacle() {
 		}
 		
 		obstacles[i].pos = -OBSTACLE_SPACE*(i+1);
-		/*wall = rand()%2;
+		wall = rand()%2;
 		switch (wall) {
 			case 0 : obstacles[i].size = 1./3;
 				 break;
 			case 1 : obstacles[i].size = 2./3;
 				 break;
-		}*/
-		obstacles[i].size = 1./3;
+		}
+		//obstacles[i].size = 1./3;
 	}
 }
 
@@ -71,16 +71,20 @@ void drawObstacles(GLuint textures) {
 				glPushMatrix();
 					switch (obstacles[i].wall) {
 						case 'b' : glScalef(1.0,obstacles[i].size,1.0);
-							   glTranslatef(0.0,-1.0,obstacles[i].pos);
+							   //glTranslatef(0.0,-1.0,obstacles[i].pos);
+							   glTranslatef(0.0,-1./pow(3*obstacles[i].size,2),obstacles[i].pos);
 			 				   break;
 						case 't' : glScalef(1.0,obstacles[i].size,1.0);
-							   glTranslatef(0.0,1.0,obstacles[i].pos);
+							   //glTranslatef(0.0,1.0,obstacles[i].pos);
+							   glTranslatef(0.0,1./pow(3*obstacles[i].size,2),obstacles[i].pos);
 				 			   break;
 						case 'l' : glScalef(obstacles[i].size,1.0,1.0);
-							   glTranslatef(-1.0,0.0,obstacles[i].pos);
+							   //glTranslatef(-1.0,0.0,obstacles[i].pos);
+							   glTranslatef(-1./pow(3*obstacles[i].size,2),0.0,obstacles[i].pos);
 			 				   break;
 						case 'r' : glScalef(obstacles[i].size,1.0,1.0);
-							   glTranslatef(1.0,0.0,obstacles[i].pos);
+							   //glTranslatef(1.0,0.0,obstacles[i].pos);
+							   glTranslatef(1./pow(3*obstacles[i].size,2),0.0,obstacles[i].pos);
 				 			   break;
 					}
 					drawSquareTexture(textures);

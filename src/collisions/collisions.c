@@ -26,6 +26,8 @@ extern Player player;
 
 extern Bonus bonus[NB_BONUS];
 
+int isDown;
+
 /* Error handling function */
 void onError(int error, const char* description)
 {
@@ -92,16 +94,27 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && !(balle.sticky) && player.forward) {
+    if (!(player.menu)) {
+	    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+	    	isDown = 1;
+	    }
+	    else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+	    	isDown = 0;
+	    }
+	    
+	    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+	    	balle.sticky = 0;
+		balle.speeZ = -0.05;
+	    }
+    }
+}
+
+void handleRightMouseButton() {
+    if (isDown && !(balle.sticky) && player.forward) {
     	obstacleSpeed = OBSTACLE_SPACE/80;
     }
-    else if ((button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) || balle.sticky || !(player.forward)) {
+    else if (!(isDown) || balle.sticky || !(player.forward)) {
     	obstacleSpeed = 0;
-    }
-    
-    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-    	balle.sticky = 0;
-	balle.speeZ = -0.05;
     }
 }
 
@@ -120,15 +133,13 @@ void collWall() {
 	for (int i=0 ; i<NB_OBSTACLES ; i++) {
 		int x1 = 0, x2 = 1280, y1 = 0, y2 = 720;
 		switch (obstacles[i].wall) {
-			case 'b' : y1 = 480;
-				   y2 = 720;
+			case 'b' : y1 = 720*(1-obstacles[i].size);
 				   break;
-			case 't' : y2 = 240;
+			case 't' : y2 = 720*obstacles[i].size;
 				   break;
-			case 'l' : x2 = 427;
+			case 'l' : x2 = 1280*obstacles[i].size;
 				   break;
-			case 'r' : x1 = 853;
-				   x2 = 1280;
+			case 'r' : x1 = 1280*(1-obstacles[i].size);
 				   break;
 		}
 		if (fabs(obstacles[i].pos - balle.posZ) <= 1) {
@@ -148,7 +159,7 @@ void collWall() {
 		}
 		
 		//printf("%f %d %d - %f %d %d - %f\n",xpos,x1,x2,(ypos-720),y1,y2,obstacles[i].pos);
-		if (obstacles[i].pos >= -1.8 && obstacles[i].pos <= -1.7 && xpos >= x1 && xpos <= x2 && ypos >= y1 && ypos <= y2) {
+		if (obstacles[i].pos >= -0.9 && obstacles[i].pos <= -0.5 && xpos >= x1 && xpos <= x2 && ypos >= y1 && ypos <= y2) {
 			player.forward = 0;
 		}
 	}
@@ -156,11 +167,18 @@ void collWall() {
 }
 
 void collRaquette(GLFWwindow* window) {
-	if (!(balle.sticky) && balle.posZ >= -0.5 && fabs(xpos - balle.posX) <= 148 && fabs(ypos - balle.posY) <= 148) {
+	if (!(balle.sticky) && balle.posZ >= -0.5 && fabs(xpos - balle.posX) <= 148 && fabs(ypos - balle.posY) <= 148 && !(player.sticky)) {
 		balle.speeZ = -balle.speeZ;
 		balle.speeX = (xpos - balle.posX)*balle.speeZ;
 		balle.speeY = (ypos - balle.posY)*balle.speeZ;
 		balle.posZ = -0.6;
+	}
+	else if (!(balle.sticky) && balle.posZ >= -0.5 && fabs(xpos - balle.posX) <= 148 && fabs(ypos - balle.posY) <= 148 && player.sticky) {
+		balle.sticky = 1;
+		balle.speeX = 0;
+		balle.speeY = 0;
+		balle.speeZ = 0.25;
+		player.sticky = 0;
 	}
 	else if (!(balle.sticky) && balle.posZ >= -0.5) {
 		balle.sticky = 1;
@@ -182,13 +200,14 @@ void collBonus() {
 		printf("%d -> %f %f %f\n",i,bonus[i].posX,bonus[i].posY,bonus[i].posZ);
 		printf("%f %f\n",xpos,ypos);
 		if (bonus[i].visible
-		    && bonus[i].posZ <= -1. && bonus[i].posZ >= -1.5
-		    && sqrt(pow(xpos-bonus[i].posX,2) + pow(ypos-bonus[i].posY,2)) <= 20) {
+		    && bonus[i].posZ <= 1. && bonus[i].posZ >= -1.5
+		    && sqrt(pow(xpos-bonus[i].posX,2) + pow(ypos-bonus[i].posY,2)) <= 100
+		    && (!(bonus[i].type) || (!(player.sticky) && bonus[i].type))) {
 			bonus[i].visible = 0;
 			switch (bonus[i].type) {
 				case 0 : player.nbVies++;
 					 break;
-				case 1 : balle.sticky = 1;
+				case 1 : player.sticky = 1;
 					 break;
 			}
 		}
@@ -390,6 +409,7 @@ int main(int argc, char** argv)
 	
 	player.nbVies = 3;
 	player.sticky = 0;
+	player.menu = 0;
 	
 	rotateAngle = 0;
 
@@ -407,50 +427,54 @@ int main(int argc, char** argv)
 		glLoadIdentity();
 
 		/* RENDER HERE */
-			
-		glfwGetCursorPos(window, &xpos, &ypos); // On reçoit la position du curseur de la souris
 		
-		player.forward = 1;
-		
-		glColor3f(1.,1.,1.);
-		drawCorridor(texturesTop, texturesBottom, texturesSides);
-		
-		glPushMatrix();
-			glScalef(6./GL_VIEW_SIZE,6./GL_VIEW_SIZE,2./GL_VIEW_SIZE);
-			glTranslatef(0.,0.,-20.);
-			glScalef(20.,20.,20.);
+		if (!(player.menu)) {
+			handleRightMouseButton();
 			
-			drawCorridorBorder();
+			glfwGetCursorPos(window, &xpos, &ypos); // On reçoit la position du curseur de la souris
+			
+			player.forward = 1;
+			
+			glColor3f(1.,1.,1.);
+			drawCorridor(texturesTop, texturesBottom, texturesSides);
+			
+			glPushMatrix();
+				glScalef(6./GL_VIEW_SIZE,6./GL_VIEW_SIZE,2./GL_VIEW_SIZE);
+				glTranslatef(0.,0.,-20.);
+				glScalef(20.,20.,20.);
 				
-			drawObstacles(texturesSides);
-			
-			moveBonus();
-			
-			drawBonus();
-			
-			moveBall();
-			
-			if (!(balle.sticky)) {
-				collCorridor();
+				drawCorridorBorder();
+					
+				drawObstacles(texturesSides);
 				
-				collWall();
+				moveBonus();
 				
-				collRaquette(window);
+				drawBonus();
+				
+				moveBall();
+				
+				if (!(balle.sticky)) {
+					collCorridor();
+					
+					collWall();
+					
+					collRaquette(window);
+				}
+				
+				collBonus();
+				
+				drawBall(texturesBall);
+			glPopMatrix();
+				
+			drawRaquette();
+			
+			drawInterface(texturesVie, texturesSticky);
+			
+			
+			rotateAngle+=ROTATE_SPEED;
+			if (rotateAngle == 360) {
+				rotateAngle = 0;
 			}
-			
-			collBonus();
-			
-			drawBall(texturesBall);
-		glPopMatrix();
-			
-		drawRaquette();
-		
-		drawInterface(texturesVie, texturesSticky);
-		
-		
-		rotateAngle+=ROTATE_SPEED;
-		if (rotateAngle == 360) {
-			rotateAngle = 0;
 		}
 
 		/* Swap front and back buffers */
