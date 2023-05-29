@@ -275,7 +275,7 @@ int main(int argc, char **argv)
 
 	/* Load images */
 
-	int widthTop, heightTop, nb_canauxTop, widthBottom, heightBottom, nb_canauxBottom, widthSides, heightSides, nb_canauxSides, widthVie, heightVie, nb_canauxVie, widthSticky, heightSticky, nb_canauxSticky, widthBall, heightBall, nb_canauxBall, widthFin, heightFin, nb_canauxFin, widthAraignee, heightAraignee, nb_canauxAraignee, widthMenu, heightMenu, nb_canauxMenu, widthCreeper, heightCreeper, nb_canauxCreeper, widthMort, heightMort, nb_canauxMort, widthSquelette, heightSquelette, nb_canauxSquelette;
+	int widthTop, heightTop, nb_canauxTop, widthBottom, heightBottom, nb_canauxBottom, widthSides, heightSides, nb_canauxSides, widthVie, heightVie, nb_canauxVie, widthSticky, heightSticky, nb_canauxSticky, widthBall, heightBall, nb_canauxBall, widthFin, heightFin, nb_canauxFin, widthAraignee, heightAraignee, nb_canauxAraignee, widthMenu, heightMenu, nb_canauxMenu, widthCreeper, heightCreeper, nb_canauxCreeper, widthMort, heightMort, nb_canauxMort, widthSquelette, heightSquelette, nb_canauxSquelette, widthVictoire, heightVictoire, nb_canauxVictoire;
 
 	//---------------------Top----------------------
 	unsigned char *imageTop = stbi_load("doc/plafondcorridor.png", &widthTop, &heightTop, &nb_canauxTop, 0);
@@ -409,8 +409,19 @@ int main(int argc, char **argv)
 	{
 		printf("Image de Squelette correctement chargée\n");
 	}
+	//----------------------Victoire---------------------
+	unsigned char *imageVictoire = stbi_load("doc/victoire.png", &widthVictoire, &heightVictoire, &nb_canauxVictoire, 0);
+
+	if (imageVictoire == NULL)
+	{
+		printf("Erreur lors du chargement de l'image de Victoire !\n");
+	}
+	else
+	{
+		printf("Image de Victoire correctement chargée\n");
+	}
 	//-------------------------------------------
-	GLuint texturesTop, texturesBottom, texturesSides, texturesVie, texturesSticky, texturesBall, texturesFin, texturesAraignee, texturesMenu, texturesCreeper, texturesMort, texturesSquelette;
+	GLuint texturesTop, texturesBottom, texturesSides, texturesVie, texturesSticky, texturesBall, texturesFin, texturesAraignee, texturesMenu, texturesCreeper, texturesMort, texturesSquelette, texturesVictoire;
 	//-----------------Top----------------------
 	glGenTextures(1, &texturesTop);
 
@@ -529,6 +540,16 @@ int main(int argc, char **argv)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthSquelette, heightSquelette, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageSquelette);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	//--------------------Victoire-----------------------//
+	glGenTextures(1, &texturesVictoire);
+
+	glBindTexture(GL_TEXTURE_2D, texturesVictoire);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthVictoire, heightVictoire, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageVictoire);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	//-------------------------------------------
