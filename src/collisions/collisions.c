@@ -275,7 +275,7 @@ int main(int argc, char **argv)
 
 	/* Load images */
 
-	int widthTop, heightTop, nb_canauxTop, widthBottom, heightBottom, nb_canauxBottom, widthSides, heightSides, nb_canauxSides, widthVie, heightVie, nb_canauxVie, widthSticky, heightSticky, nb_canauxSticky, widthBall, heightBall, nb_canauxBall, widthFin, heightFin, nb_canauxFin, widthAraignee, heightAraignee, nb_canauxAraignee;
+	int widthTop, heightTop, nb_canauxTop, widthBottom, heightBottom, nb_canauxBottom, widthSides, heightSides, nb_canauxSides, widthVie, heightVie, nb_canauxVie, widthSticky, heightSticky, nb_canauxSticky, widthBall, heightBall, nb_canauxBall, widthFin, heightFin, nb_canauxFin, widthAraignee, heightAraignee, nb_canauxAraignee, widthMenu, heightMenu, nb_canauxMenu;
 
 	unsigned char *imageTop = stbi_load("doc/plafondcorridor.png", &widthTop, &heightTop, &nb_canauxTop, 0);
 
@@ -357,15 +357,25 @@ int main(int argc, char **argv)
 
 	if (imageAraignee == NULL)
 	{
-		printf("Erreur lors du chargement de l'image de Fin !\n");
+		printf("Erreur lors du chargement de l'image de Araignee !\n");
 	}
 	else
 	{
-		printf("Image de Fin correctement chargée\n");
+		printf("Image de Araignee correctement chargée\n");
+	}
+	unsigned char *imageMenu = stbi_load("doc/menu.png", &widthMenu, &heightMenu, &nb_canauxMenu, 0);
+
+	if (imageMenu == NULL)
+	{
+		printf("Erreur lors du chargement de l'image de Menu !\n");
+	}
+	else
+	{
+		printf("Image de Menu correctement chargée\n");
 	}
 
-	GLuint texturesTop, texturesBottom, texturesSides, texturesVie, texturesSticky, texturesBall, texturesFin, texturesAraignee;
-	//-------------------------------------------
+	GLuint texturesTop, texturesBottom, texturesSides, texturesVie, texturesSticky, texturesBall, texturesFin, texturesAraignee, texturesMenu;
+	//-----------------Top----------------------
 	glGenTextures(1, &texturesTop);
 
 	glBindTexture(GL_TEXTURE_2D, texturesTop);
@@ -375,7 +385,7 @@ int main(int argc, char **argv)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthTop, heightTop, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageTop);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-	//-------------------------------------------
+	//---------------Bottom---------------------
 	glGenTextures(1, &texturesBottom);
 
 	glBindTexture(GL_TEXTURE_2D, texturesBottom);
@@ -385,7 +395,7 @@ int main(int argc, char **argv)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthBottom, heightBottom, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageBottom);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-	//-------------------------------------------
+	//---------------Sides-------------------------
 	glGenTextures(1, &texturesSides);
 
 	glBindTexture(GL_TEXTURE_2D, texturesSides);
@@ -395,7 +405,7 @@ int main(int argc, char **argv)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthSides, heightSides, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageSides);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-	//-------------------------------------------
+	//----------------Vie--------------------
 	glGenTextures(1, &texturesVie);
 
 	glBindTexture(GL_TEXTURE_2D, texturesVie);
@@ -405,7 +415,7 @@ int main(int argc, char **argv)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthVie, heightVie, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageVie);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-	//-------------------------------------------
+	//---------------Sticky-----------------------
 	glGenTextures(1, &texturesSticky);
 
 	glBindTexture(GL_TEXTURE_2D, texturesSticky);
@@ -415,7 +425,7 @@ int main(int argc, char **argv)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthSticky, heightSticky, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageSticky);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-	//-------------------------------------------//
+	//----------------Ball-------------------------//
 	glGenTextures(1, &texturesBall);
 
 	glBindTexture(GL_TEXTURE_2D, texturesBall);
@@ -443,6 +453,16 @@ int main(int argc, char **argv)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthAraignee, heightAraignee, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageAraignee);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	//--------------------menu-----------------------//
+	glGenTextures(1, &texturesMenu);
+
+	glBindTexture(GL_TEXTURE_2D, texturesMenu);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthMenu, heightMenu, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageMenu);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	//-------------------------------------------
