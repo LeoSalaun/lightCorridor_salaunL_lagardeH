@@ -388,7 +388,7 @@ int main(int argc, char **argv)
 		printf("Image de Creeper correctement chargée\n");
 	}
 	//-------------------Mort------------------------
-	unsigned char *imageMort = stbi_load("doc/mort.png", &widthMort, &heightCreeper, &nb_canauxMort, 0);
+	unsigned char *imageMort = stbi_load("doc/mort.png", &widthMort, &heightMort, &nb_canauxMort, 0);
 
 	if (imageMort == NULL)
 	{
@@ -627,7 +627,7 @@ int main(int argc, char **argv)
 
 			drawCorridorBorder();
 
-			drawObstacles(texturesSides);
+			drawObstacles(texturesAraignee, texturesCreeper, texturesSquelette, texturesZombie);
 
 			moveBonus();
 
