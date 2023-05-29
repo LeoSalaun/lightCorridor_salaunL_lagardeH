@@ -118,9 +118,17 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 			balle.speeZ = -0.05;
 		}
 	}
-	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xpos >= 500 && xpos <= 780)
 	{
+		if (ypos >= 265 && ypos <= 330)
+		{
+			player.menu = 0;
 		}
+		else if (ypos >= 350 && ypos <= 420)
+		{
+			glfwSetWindowShouldClose(window, GLFW_TRUE);
+		}
+	}
 }
 
 void handleRightMouseButton()
@@ -664,7 +672,7 @@ int main(int argc, char **argv)
 			}
 			break;
 		case 1:
-			glTranslatef(0.,0.,-0.86);
+			glTranslatef(0., 0., -0.86);
 			glScalef(16. / 9, 1., 1.);
 			drawSquareTexture(texturesMenu);
 		case 2:
