@@ -200,7 +200,7 @@ void collBonus() {
 		printf("%d -> %f %f %f\n",i,bonus[i].posX,bonus[i].posY,bonus[i].posZ);
 		printf("%f %f\n",xpos,ypos);
 		if (bonus[i].visible
-		    && bonus[i].posZ <= 1. && bonus[i].posZ >= -1.5
+		    && bonus[i].posZ <= 1. && bonus[i].posZ >= -2.
 		    && sqrt(pow(xpos-bonus[i].posX,2) + pow(ypos-bonus[i].posY,2)) <= 100
 		    && (!(bonus[i].type) || (!(player.sticky) && bonus[i].type))) {
 			bonus[i].visible = 0;
