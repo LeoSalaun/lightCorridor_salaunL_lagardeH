@@ -275,7 +275,7 @@ int main(int argc, char **argv)
 
 	/* Load images */
 
-	int widthTop, heightTop, nb_canauxTop, widthBottom, heightBottom, nb_canauxBottom, widthSides, heightSides, nb_canauxSides, widthVie, heightVie, nb_canauxVie, widthSticky, heightSticky, nb_canauxSticky, widthBall, heightBall, nb_canauxBall, widthFin, heightFin, nb_canauxFin, widthAraignee, heightAraignee, nb_canauxAraignee, widthMenu, heightMenu, nb_canauxMenu;
+	int widthTop, heightTop, nb_canauxTop, widthBottom, heightBottom, nb_canauxBottom, widthSides, heightSides, nb_canauxSides, widthVie, heightVie, nb_canauxVie, widthSticky, heightSticky, nb_canauxSticky, widthBall, heightBall, nb_canauxBall, widthFin, heightFin, nb_canauxFin, widthAraignee, heightAraignee, nb_canauxAraignee, widthMenu, heightMenu, nb_canauxMenu, widthCreeper, heightCreeper, nb_canauxCreeper;
 
 	unsigned char *imageTop = stbi_load("doc/plafondcorridor.png", &widthTop, &heightTop, &nb_canauxTop, 0);
 
@@ -374,7 +374,18 @@ int main(int argc, char **argv)
 		printf("Image de Menu correctement chargée\n");
 	}
 
-	GLuint texturesTop, texturesBottom, texturesSides, texturesVie, texturesSticky, texturesBall, texturesFin, texturesAraignee, texturesMenu;
+	unsigned char *imageCreeper = stbi_load("doc/menu.png", &widthCreeper, &heightCreeper, &nb_canauxCreeper, 0);
+
+	if (imageCreeper == NULL)
+	{
+		printf("Erreur lors du chargement de l'image de Creeper !\n");
+	}
+	else
+	{
+		printf("Image de Creeper correctement chargée\n");
+	}
+
+	GLuint texturesTop, texturesBottom, texturesSides, texturesVie, texturesSticky, texturesBall, texturesFin, texturesAraignee, texturesMenu, texturesCreeper;
 	//-----------------Top----------------------
 	glGenTextures(1, &texturesTop);
 
@@ -463,6 +474,16 @@ int main(int argc, char **argv)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthMenu, heightMenu, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageMenu);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	//--------------------creeper-----------------------//
+	glGenTextures(1, &texturesCreeper);
+
+	glBindTexture(GL_TEXTURE_2D, texturesCreeper);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthCreeper, heightCreeper, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageCreeper);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	//-------------------------------------------
