@@ -627,7 +627,7 @@ int main(int argc, char **argv)
 
 			drawCorridorBorder();
 
-			drawObstacles(texturesSides);
+			drawObstacles(texturesAraignee, texturesCreeper, texturesSquelette, texturesZombie);
 
 			moveBonus();
 
