@@ -619,13 +619,13 @@ int main(int argc, char **argv)
 		glLoadIdentity();
 
 		/* RENDER HERE */
+		
+		glfwGetCursorPos(window, &xpos, &ypos); // On reçoit la position du curseur de la souris
 
 		switch (player.menu)
 		{
 		case 0:
 			handleRightMouseButton();
-
-			glfwGetCursorPos(window, &xpos, &ypos); // On reçoit la position du curseur de la souris
 
 			player.forward = 1;
 
