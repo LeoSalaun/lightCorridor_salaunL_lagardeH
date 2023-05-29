@@ -275,7 +275,7 @@ int main(int argc, char **argv)
 
 	/* Load images */
 
-	int widthTop, heightTop, nb_canauxTop, widthBottom, heightBottom, nb_canauxBottom, widthSides, heightSides, nb_canauxSides, widthVie, heightVie, nb_canauxVie, widthSticky, heightSticky, nb_canauxSticky, widthBall, heightBall, nb_canauxBall, widthFin, heightFin, nb_canauxFin;
+	int widthTop, heightTop, nb_canauxTop, widthBottom, heightBottom, nb_canauxBottom, widthSides, heightSides, nb_canauxSides, widthVie, heightVie, nb_canauxVie, widthSticky, heightSticky, nb_canauxSticky, widthBall, heightBall, nb_canauxBall, widthFin, heightFin, nb_canauxFin, widthAraignee, heightAraignee, nb_canauxAraignee;
 
 	unsigned char *imageTop = stbi_load("doc/plafondcorridor.png", &widthTop, &heightTop, &nb_canauxTop, 0);
 
@@ -353,8 +353,18 @@ int main(int argc, char **argv)
 	{
 		printf("Image de Fin correctement chargée\n");
 	}
+	unsigned char *imageAraignee = stbi_load("doc/araignée.png", &widthAraignee, &heightAraignee, &nb_canauxAraignee, 0);
 
-	GLuint texturesTop, texturesBottom, texturesSides, texturesVie, texturesSticky, texturesBall, texturesFin;
+	if (imageAraignee == NULL)
+	{
+		printf("Erreur lors du chargement de l'image de Fin !\n");
+	}
+	else
+	{
+		printf("Image de Fin correctement chargée\n");
+	}
+
+	GLuint texturesTop, texturesBottom, texturesSides, texturesVie, texturesSticky, texturesBall, texturesFin, texturesAraignee;
 	//-------------------------------------------
 	glGenTextures(1, &texturesTop);
 
@@ -415,7 +425,7 @@ int main(int argc, char **argv)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthBall, heightBall, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageBall);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-	//-------------------------------------------//
+	//-----------------Fin-----------------------//
 	glGenTextures(1, &texturesFin);
 
 	glBindTexture(GL_TEXTURE_2D, texturesFin);
@@ -423,6 +433,16 @@ int main(int argc, char **argv)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthFin, heightFin, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageFin);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	//---------------------araignée----------------------//
+	glGenTextures(1, &texturesAraignee);
+
+	glBindTexture(GL_TEXTURE_2D, texturesAraignee);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthAraignee, heightAraignee, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageAraignee);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	//-------------------------------------------
