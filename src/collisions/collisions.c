@@ -590,7 +590,7 @@ int main(int argc, char **argv)
 
 	player.nbVies = 3;
 	player.sticky = 0;
-	player.menu = 0;
+	player.menu = 1;
 
 	rotateAngle = 0;
 
@@ -609,8 +609,9 @@ int main(int argc, char **argv)
 
 		/* RENDER HERE */
 
-		if (!(player.menu))
+		switch (player.menu)
 		{
+		case 0:
 			handleRightMouseButton();
 
 			glfwGetCursorPos(window, &xpos, &ypos); // On reçoit la position du curseur de la souris
@@ -658,6 +659,12 @@ int main(int argc, char **argv)
 			{
 				rotateAngle = 0;
 			}
+			break;
+		case 1:
+			glScalef(1, 16 / 9, 1);
+			drawSquareTexture(texturesMenu);
+		case 2:
+		case 3:
 		}
 
 		/* Swap front and back buffers */
