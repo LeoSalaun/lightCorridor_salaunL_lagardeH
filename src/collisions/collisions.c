@@ -275,8 +275,9 @@ int main(int argc, char **argv)
 
 	/* Load images */
 
-	int widthTop, heightTop, nb_canauxTop, widthBottom, heightBottom, nb_canauxBottom, widthSides, heightSides, nb_canauxSides, widthVie, heightVie, nb_canauxVie, widthSticky, heightSticky, nb_canauxSticky, widthBall, heightBall, nb_canauxBall, widthFin, heightFin, nb_canauxFin, widthAraignee, heightAraignee, nb_canauxAraignee, widthMenu, heightMenu, nb_canauxMenu, widthCreeper, heightCreeper, nb_canauxCreeper, widthMort, heightMort, nb_canauxMort;
+	int widthTop, heightTop, nb_canauxTop, widthBottom, heightBottom, nb_canauxBottom, widthSides, heightSides, nb_canauxSides, widthVie, heightVie, nb_canauxVie, widthSticky, heightSticky, nb_canauxSticky, widthBall, heightBall, nb_canauxBall, widthFin, heightFin, nb_canauxFin, widthAraignee, heightAraignee, nb_canauxAraignee, widthMenu, heightMenu, nb_canauxMenu, widthCreeper, heightCreeper, nb_canauxCreeper, widthMort, heightMort, nb_canauxMort, widthSquelette, heightSquelette, nb_canauxSquelette;
 
+	//---------------------Top----------------------
 	unsigned char *imageTop = stbi_load("doc/plafondcorridor.png", &widthTop, &heightTop, &nb_canauxTop, 0);
 
 	if (imageTop == NULL)
@@ -287,7 +288,7 @@ int main(int argc, char **argv)
 	{
 		printf("Image de plafond correctement chargée\n");
 	}
-
+	//------------------Bottom-------------------------
 	unsigned char *imageBottom = stbi_load("doc/solcorridor.png", &widthBottom, &heightBottom, &nb_canauxBottom, 0);
 
 	if (imageBottom == NULL)
@@ -298,7 +299,7 @@ int main(int argc, char **argv)
 	{
 		printf("Image de sol correctement chargée\n");
 	}
-
+	//------------------------Sides-------------------
 	unsigned char *imageSides = stbi_load("doc/cotecorridor.png", &widthSides, &heightSides, &nb_canauxSides, 0);
 
 	if (imageSides == NULL)
@@ -309,7 +310,7 @@ int main(int argc, char **argv)
 	{
 		printf("Image de côtés correctement chargée\n");
 	}
-
+	//-------------------Vie------------------------
 	unsigned char *imageVie = stbi_load("doc/vie.png", &widthVie, &heightVie, &nb_canauxVie, 0);
 
 	if (imageVie == NULL)
@@ -320,7 +321,7 @@ int main(int argc, char **argv)
 	{
 		printf("Image de vie correctement chargée\n");
 	}
-
+	//-------------------------Sticky------------------
 	unsigned char *imageSticky = stbi_load("doc/web.png", &widthSticky, &heightSticky, &nb_canauxSticky, 0);
 
 	if (imageSticky == NULL)
@@ -331,7 +332,7 @@ int main(int argc, char **argv)
 	{
 		printf("Image de toile correctement chargée\n");
 	}
-
+	//----------------------Ball---------------------
 	unsigned char *imageBall = stbi_load("doc/pearl.png", &widthBall, &heightBall, &nb_canauxBall, 0);
 
 	if (imageBall == NULL)
@@ -342,7 +343,7 @@ int main(int argc, char **argv)
 	{
 		printf("Image de balle correctement chargée\n");
 	}
-
+	//---------------------------Fin----------------
 	unsigned char *imageFin = stbi_load("doc/FIN.png", &widthFin, &heightFin, &nb_canauxFin, 0);
 
 	if (imageFin == NULL)
@@ -353,6 +354,7 @@ int main(int argc, char **argv)
 	{
 		printf("Image de Fin correctement chargée\n");
 	}
+	//--------------------Araignee-----------------------
 	unsigned char *imageAraignee = stbi_load("doc/araignée.png", &widthAraignee, &heightAraignee, &nb_canauxAraignee, 0);
 
 	if (imageAraignee == NULL)
@@ -363,6 +365,7 @@ int main(int argc, char **argv)
 	{
 		printf("Image de Araignee correctement chargée\n");
 	}
+	//-------------------Menu------------------------
 	unsigned char *imageMenu = stbi_load("doc/menu.png", &widthMenu, &heightMenu, &nb_canauxMenu, 0);
 
 	if (imageMenu == NULL)
@@ -373,7 +376,7 @@ int main(int argc, char **argv)
 	{
 		printf("Image de Menu correctement chargée\n");
 	}
-
+	//-------------------------Creeper------------------
 	unsigned char *imageCreeper = stbi_load("doc/creeper.png", &widthCreeper, &heightCreeper, &nb_canauxCreeper, 0);
 
 	if (imageCreeper == NULL)
@@ -384,7 +387,7 @@ int main(int argc, char **argv)
 	{
 		printf("Image de Creeper correctement chargée\n");
 	}
-
+	//-------------------Mort------------------------
 	unsigned char *imageMort = stbi_load("doc/mort.png", &widthMort, &heightCreeper, &nb_canauxMort, 0);
 
 	if (imageMort == NULL)
@@ -395,8 +398,19 @@ int main(int argc, char **argv)
 	{
 		printf("Image de Mort correctement chargée\n");
 	}
+	//----------------------Squelette---------------------
+	unsigned char *imageSquelette = stbi_load("doc/squeletteobstacle.png", &widthSquelette, &heightSquelette, &nb_canauxSquelette, 0);
 
-	GLuint texturesTop, texturesBottom, texturesSides, texturesVie, texturesSticky, texturesBall, texturesFin, texturesAraignee, texturesMenu, texturesCreeper, texturesMort;
+	if (imageSquelette == NULL)
+	{
+		printf("Erreur lors du chargement de l'image de Squelette !\n");
+	}
+	else
+	{
+		printf("Image de Squelette correctement chargée\n");
+	}
+	//-------------------------------------------
+	GLuint texturesTop, texturesBottom, texturesSides, texturesVie, texturesSticky, texturesBall, texturesFin, texturesAraignee, texturesMenu, texturesCreeper, texturesMort, texturesSquelette;
 	//-----------------Top----------------------
 	glGenTextures(1, &texturesTop);
 
@@ -505,6 +519,16 @@ int main(int argc, char **argv)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthMort, heightMort, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageMort);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	//--------------------Squelette-----------------------//
+	glGenTextures(1, &texturesSquelette);
+
+	glBindTexture(GL_TEXTURE_2D, texturesSquelette);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthSquelette, heightSquelette, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageSquelette);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	//-------------------------------------------
