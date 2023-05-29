@@ -123,6 +123,18 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 		if (ypos >= 265 && ypos <= 330)
 		{
 			player.menu = 0;
+			initObstacle();
+			initBonus();
+
+			balle.sticky = 1;
+			balle.speeX = 0;
+			balle.speeY = 0;
+			balle.speeZ = 0;
+
+			player.nbVies = 3;
+			player.sticky = 0;
+
+			rotateAngle = 0;
 		}
 		else if (ypos >= 350 && ypos <= 420)
 		{
@@ -222,12 +234,12 @@ void collRaquette(GLFWwindow *window)
 		player.nbVies--;
 		if (player.nbVies == 0)
 		{
-			glfwSetWindowShouldClose(window, GLFW_TRUE);
+			player.menu = 3;
 		}
 	}
 	if (obstacles[NB_OBSTACLES - 1].pos - OBSTACLE_SPACE >= -0.5)
 	{
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
+		player.menu = 2;
 	}
 }
 
@@ -590,20 +602,7 @@ int main(int argc, char **argv)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	/* Initialize variables */
-
-	initObstacle();
-	initBonus();
-
-	balle.sticky = 1;
-	balle.speeX = 0;
-	balle.speeY = 0;
-	balle.speeZ = 0;
-
-	player.nbVies = 3;
-	player.sticky = 0;
 	player.menu = 1;
-
-	rotateAngle = 0;
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -619,7 +618,7 @@ int main(int argc, char **argv)
 		glLoadIdentity();
 
 		/* RENDER HERE */
-		
+
 		glfwGetCursorPos(window, &xpos, &ypos); // On reçoit la position du curseur de la souris
 
 		switch (player.menu)
