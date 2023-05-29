@@ -3,7 +3,7 @@
 /* Window properties */
 static const unsigned int WINDOW_WIDTH = 1280;
 static const unsigned int WINDOW_HEIGHT = 720;
-static const char WINDOW_TITLE[] = "TD04 Ex01";
+static const char WINDOW_TITLE[] = "The Light Corridor";
 static float aspectRatio = 1.0;
 
 /* Minimal time wanted between two images */
