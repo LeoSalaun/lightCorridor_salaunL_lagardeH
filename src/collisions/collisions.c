@@ -220,14 +220,14 @@ void collRaquette(GLFWwindow *window)
 	}
 }
 
-void collBonus() {
-	for (int i=0 ; i<NB_BONUS ; i++) {
-		printf("%d -> %f %f %f\n",i,bonus[i].posX,bonus[i].posY,bonus[i].posZ);
-		printf("%f %f\n",xpos,ypos);
-		if (bonus[i].visible
-		    && bonus[i].posZ <= 1. && bonus[i].posZ >= -2.
-		    && sqrt(pow(xpos-bonus[i].posX,2) + pow(ypos-bonus[i].posY,2)) <= 100
-		    && (!(bonus[i].type) || (!(player.sticky) && bonus[i].type))) {
+void collBonus()
+{
+	for (int i = 0; i < NB_BONUS; i++)
+	{
+		printf("%d -> %f %f %f\n", i, bonus[i].posX, bonus[i].posY, bonus[i].posZ);
+		printf("%f %f\n", xpos, ypos);
+		if (bonus[i].visible && bonus[i].posZ <= 1. && bonus[i].posZ >= -2. && sqrt(pow(xpos - bonus[i].posX, 2) + pow(ypos - bonus[i].posY, 2)) <= 100 && (!(bonus[i].type) || (!(player.sticky) && bonus[i].type)))
+		{
 			bonus[i].visible = 0;
 			switch (bonus[i].type)
 			{
@@ -627,7 +627,7 @@ int main(int argc, char **argv)
 
 			drawCorridorBorder();
 
-			drawObstacles(texturesAraignee, texturesCreeper, texturesSquelette, texturesZombie);
+			drawObstacles(texturesAraignee, texturesCreeper, texturesSquelette, texturesZombie, texturesFin);
 
 			moveBonus();
 

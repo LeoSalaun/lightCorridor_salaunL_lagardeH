@@ -74,7 +74,7 @@ void initObstacle()
 	}
 }*/
 
-void drawObstacles(GLuint texturesAraignee, GLuint texturesCreeper, GLuint texturesSquelette, GLuint texturesZombie)
+void drawObstacles(GLuint texturesAraignee, GLuint texturesCreeper, GLuint texturesSquelette, GLuint texturesZombie, GLuint texturesFin)
 {
 	glPushMatrix();
 	glScalef(12. / 9., 0.75, 1.);
@@ -137,9 +137,9 @@ void drawObstacles(GLuint texturesAraignee, GLuint texturesCreeper, GLuint textu
 	}
 	if (obstacles[NB_OBSTACLES - 1].pos >= -3 * OBSTACLE_SPACE)
 	{ // Mur de fin de niveau-jeu
-		glColor3f(1.0 + (obstacles[NB_OBSTACLES - 1].pos - OBSTACLE_SPACE) / (1. * OBSTACLE_LENGTH), 0., 0.);
+		glColor3f(1.0 + (obstacles[NB_OBSTACLES - 1].pos - OBSTACLE_SPACE) / (1. * OBSTACLE_LENGTH), 1.0 + (obstacles[NB_OBSTACLES - 1].pos - OBSTACLE_SPACE) / (1. * OBSTACLE_LENGTH), 1.0 + (obstacles[NB_OBSTACLES - 1].pos - OBSTACLE_SPACE) / (1. * OBSTACLE_LENGTH));
 		glTranslatef(0.0, 0.0, obstacles[NB_OBSTACLES - 1].pos - OBSTACLE_SPACE);
-		drawSquare();
+		drawSquareTexture(texturesFin);
 	}
 	glPopMatrix();
 }
