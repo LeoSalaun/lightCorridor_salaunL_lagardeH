@@ -108,9 +108,8 @@ void drawObstacles(GLuint texturesAraignee, GLuint texturesCreeper, GLuint textu
 				glTranslatef(1. / pow(3 * obstacles[i].size, 2), 0.0, obstacles[i].pos);
 				break;
 			}
-			switch (obstacles[i].size)
+			if (obstacles[i].size == 1. / 3)
 			{
-			case 1. / 3:
 				if (obstacles[i].wall == 't' || obstacles[i].wall == 'b')
 				{
 					drawSquareTexture(texturesAraignee);
@@ -119,9 +118,10 @@ void drawObstacles(GLuint texturesAraignee, GLuint texturesCreeper, GLuint textu
 				{
 					drawSquareTexture(texturesSquelette);
 				}
-				break;
+			}
 
-			case 2. / 3:
+			else if (obstacles[i].size == 2. / 3)
+			{
 				if (obstacles[i].wall == 't' || obstacles[i].wall == 'b')
 				{
 					drawSquareTexture(texturesCreeper);
@@ -130,7 +130,6 @@ void drawObstacles(GLuint texturesAraignee, GLuint texturesCreeper, GLuint textu
 				{
 					drawSquareTexture(texturesZombie);
 				}
-				break;
 			}
 
 			glPopMatrix();
