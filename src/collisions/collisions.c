@@ -674,8 +674,17 @@ int main(int argc, char **argv)
 			glTranslatef(0., 0., -0.86);
 			glScalef(16. / 9, 1., 1.);
 			drawSquareTexture(texturesMenu);
+			break;
 		case 2:
+			glTranslatef(0., 0., -0.86);
+			glScalef(16. / 9, 1., 1.);
+			drawSquareTexture(texturesVictoire);
+			break;
 		case 3:
+			glTranslatef(0., 0., -0.86);
+			glScalef(16. / 9, 1., 1.);
+			drawSquareTexture(texturesMort);
+			break;
 		}
 
 		/* Swap front and back buffers */
