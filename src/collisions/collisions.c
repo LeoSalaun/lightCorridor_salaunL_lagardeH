@@ -661,7 +661,8 @@ int main(int argc, char **argv)
 			}
 			break;
 		case 1:
-			glScalef(1, 16 / 9, 1);
+			glTranslatef(0.,0.,-0.86);
+			glScalef(16. / 9, 1., 1.);
 			drawSquareTexture(texturesMenu);
 		case 2:
 		case 3:
