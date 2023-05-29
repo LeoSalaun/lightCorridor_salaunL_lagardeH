@@ -118,6 +118,9 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 			balle.speeZ = -0.05;
 		}
 	}
+	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		}
 }
 
 void handleRightMouseButton()
