@@ -120,21 +120,13 @@ void initBonus() {
 }
 
 /*
-* Déplace les bonus à la même vitesse que les obstacles
-*/
-void moveBonus() {
-	for (int i=0 ; i<NB_BONUS ; i++) {
-		bonus[i].posZ += obstacleSpeed;
-	}
-}
-
-/*
 * Dessine l'ensemble des bonus
 */
 void drawBonus() {
 	glPushMatrix();
 		glScalef(1./1280,1./1280,1.);
 		for (int i=0 ; i<NB_BONUS ; i++) {
+			bonus[i].posZ += obstacleSpeed;
 			if (bonus[i].visible) {
 				glPushMatrix();
 					glTranslatef(bonus[i].posX-640,bonus[i].posY-640,bonus[i].posZ);

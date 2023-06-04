@@ -206,7 +206,12 @@ void collWall()
 		if (fabs(obstacles[i].pos - balle.posZ) <= 1)
 		{ // S'il y a contact entre la balle et l'obstacle, alors on inverse la vitesse en Z de la balle
 
-			if ((fabs(obstacles[i].pos - balle.posZ) <= 0.5 && balle.posX >= x1 && balle.posX <= x2 && balle.posY >= y1 && balle.posY <= y2) || sqrt(pow(x1 - balle.posX, 2) + pow(obstacles[i].pos - balle.posZ, 2)) <= 1 || sqrt(pow(x2 - balle.posX, 2) + pow(obstacles[i].pos - balle.posZ, 2)) <= 1 || sqrt(pow(y1 - balle.posY, 2) + pow(obstacles[i].pos - balle.posZ, 2)) <= 1 || sqrt(pow(y2 - balle.posY, 2) + pow(obstacles[i].pos - balle.posZ, 2)) <= 1)
+			if ((fabs(obstacles[i].pos - balle.posZ) <= 0.5
+			    && balle.posX >= x1 && balle.posX <= x2 && balle.posY >= y1 && balle.posY <= y2)
+			    || sqrt(pow(x1 - balle.posX, 2) + pow(obstacles[i].pos - balle.posZ, 2)) <= 0.5
+			    || sqrt(pow(x2 - balle.posX, 2) + pow(obstacles[i].pos - balle.posZ, 2)) <= 0.5
+			    || sqrt(pow(y1 - balle.posY, 2) + pow(obstacles[i].pos - balle.posZ, 2)) <= 0.5
+			    || sqrt(pow(y2 - balle.posY, 2) + pow(obstacles[i].pos - balle.posZ, 2)) <= 0.5)
 			{
 				balle.speeZ = -balle.speeZ;
 			}
@@ -659,8 +664,6 @@ int main(int argc, char **argv)
 				drawCorridorBorder();
 
 				drawObstacles(texturesAraignee, texturesCreeper, texturesSquelette, texturesZombie, texturesFin, balle.posZ);
-
-				moveBonus();
 
 				drawBonus();
 
