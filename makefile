@@ -38,10 +38,14 @@ EXEC_INT= interface.out
 OBJ_COL= $(OBJ_CRD) $(OBJDIR)raquette/raquette.o $(OBJDIR)obstacles/obstacles.o $(OBJDIR)bonus/bonus.o $(OBJDIR)interface/interface.o $(OBJDIR)collisions/collisions.o
 EXEC_COL= collisions.out
 
+# Fichiers application finale
+OBJ_APP= $(OBJ_COL)
+EXEC_APP= The_Light_Corridor.out
+
 
 # Regles compilation projet
 
-all : raquette #corridor #obstacles #collisions
+all : app #raquette #corridor #obstacles #collisions
 
 corridor : $(OBJ_CRD)
 	$(CC) $(CFLAGS) $(OBJ_CRD) -o $(BINDIR)/$(EXEC_CRD) $(LDFLAGS)
@@ -60,6 +64,9 @@ interface : $(OBJ_INT)
 
 collisions : $(OBJ_COL)
 	$(CC) $(CFLAGS) $(OBJ_COL) -o $(BINDIR)$(EXEC_COL) $(LDFLAGS)
+
+app : $(OBJ_APP)
+	$(CC) $(CFLAGS) $(OBJ_APP) -o $(BINDIR)$(EXEC_APP) $(LDFLAGS)
 
 
 clean :

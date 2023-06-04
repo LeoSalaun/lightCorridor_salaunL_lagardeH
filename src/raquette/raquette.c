@@ -54,7 +54,9 @@ void moveBall() {
 void drawBall(GLuint textures) { // On dessine la balle
 	if (/*balle.posZ >= -10 && */balle.posZ <= 0) {
 		glPushMatrix();
-			glColor3f(1.0+balle.posZ/12,1.0+balle.posZ/12,1.0+balle.posZ/12);
+			//glColor3f(1.0+balle.posZ/12,1.0+balle.posZ/12,1.0+balle.posZ/12);
+			glColor3f(1.,1.,1.);
+			
 			//glTranslatef( (balle.posX-640)/720 , -(balle.posY-360)/720 , balle.posZ);
 			//glScalef(0.075,0.075,0.075);
 			//glScalef(1./320,1./320,1.);

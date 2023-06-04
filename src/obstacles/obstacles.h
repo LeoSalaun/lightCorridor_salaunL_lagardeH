@@ -15,4 +15,4 @@ void drawCorridorBorder();
 
 void initObstacle();
 
-void drawObstacles(GLuint texturesAraignee, GLuint texturesCreeper, GLuint texturesSquelette, GLuint texturesZombie, GLuint texturesFin);
+void drawObstacles(GLuint texturesAraignee, GLuint texturesCreeper, GLuint texturesSquelette, GLuint texturesZombie, GLuint texturesFin, int posBalle);

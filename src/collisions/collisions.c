@@ -17,6 +17,7 @@ static const double FRAMERATE_IN_SECONDS = 1. / 120.;
 extern Ball balle;
 extern double xpos, ypos;
 
+extern double corridorBorderPos[4];
 extern double obstacleSpeed;
 // extern double corridorBorderPos[4] = {-10,-20,-30,-40};
 extern Obstacle obstacles[NB_OBSTACLES];
@@ -123,6 +124,11 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 		if (ypos >= 265 && ypos <= 330)
 		{
 			player.menu = 0;
+			
+			for (int i=0 ; i<4 ; i++) {
+				corridorBorderPos[i] = -OBSTACLE_SPACE * (i+1);
+			}
+			
 			initObstacle();
 			initBonus();
 
@@ -205,7 +211,7 @@ void collWall()
 			player.forward = 0;
 		}
 	}
-	printf("%f - %f - %f\n", xpos, (ypos - 720), obstacles[0].pos);
+	//printf("%f - %f - %f\n", xpos, (ypos - 720), obstacles[0].pos);
 }
 
 void collRaquette(GLFWwindow *window)
@@ -247,8 +253,8 @@ void collBonus()
 {
 	for (int i = 0; i < NB_BONUS; i++)
 	{
-		printf("%d -> %f %f %f\n", i, bonus[i].posX, bonus[i].posY, bonus[i].posZ);
-		printf("%f %f\n", xpos, ypos);
+		//printf("%d -> %f %f %f\n", i, bonus[i].posX, bonus[i].posY, bonus[i].posZ);
+		//printf("%f %f\n", xpos, ypos);
 		if (bonus[i].visible && bonus[i].posZ <= 1. && bonus[i].posZ >= -2. && sqrt(pow(xpos - bonus[i].posX, 2) + pow(ypos - bonus[i].posY, 2)) <= 100 && (!(bonus[i].type) || (!(player.sticky) && bonus[i].type)))
 		{
 			bonus[i].visible = 0;
@@ -638,7 +644,7 @@ int main(int argc, char **argv)
 
 			drawCorridorBorder();
 
-			drawObstacles(texturesAraignee, texturesCreeper, texturesSquelette, texturesZombie, texturesFin);
+			drawObstacles(texturesAraignee, texturesCreeper, texturesSquelette, texturesZombie, texturesFin, balle.posZ);
 
 			moveBonus();
 

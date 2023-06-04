@@ -1,11 +1,12 @@
 #include <time.h>
+#include <math.h>
 #include "stb_image.h"
 #include "3D_tools.h"
 
 #include "obstacles.h"
 
 double obstacleSpeed;
-double corridorBorderPos[4] = {-OBSTACLE_SPACE, -2 * OBSTACLE_SPACE, -3 * OBSTACLE_SPACE, -4 * OBSTACLE_SPACE};
+double corridorBorderPos[4];
 Obstacle obstacles[NB_OBSTACLES];
 
 int nbObstacles = NB_OBSTACLES;
@@ -74,16 +75,30 @@ void initObstacle()
 	}
 }*/
 
-void drawObstacles(GLuint texturesAraignee, GLuint texturesCreeper, GLuint texturesSquelette, GLuint texturesZombie, GLuint texturesFin)
+void drawObstacles(GLuint texturesAraignee, GLuint texturesCreeper, GLuint texturesSquelette, GLuint texturesZombie, GLuint texturesFin, int posBalle)
 {
 	glPushMatrix();
 	glScalef(12. / 9., 0.75, 1.);
 	for (int i = 0; i < NB_OBSTACLES; i++)
 	{
 		obstacles[i].pos += obstacleSpeed;
-		if (obstacles[i].pos >= -OBSTACLE_LENGTH && obstacles[i].pos <= 0)
+		//if (obstacles[i].pos >= -OBSTACLE_LENGTH && obstacles[i].pos <= 0)
+		if (obstacles[i].pos <= 0)
 		{
-			glColor3f(1.0 + obstacles[i].pos / (1. * OBSTACLE_LENGTH), 1.0 + obstacles[i].pos / (1. * OBSTACLE_LENGTH), 1.0 + obstacles[i].pos / (1. * OBSTACLE_LENGTH));
+			double lightCamera = 1.0 + obstacles[i].pos / (1. * OBSTACLE_LENGTH), lightBall;
+			
+			if (obstacles[i].pos - posBalle > 0) {
+				//lightBall = 1.0 + (posBalle - obstacles[i].pos) / (1. * OBSTACLE_SPACE);
+				lightBall = 0;
+			}
+			else {
+				lightBall = 1. + 1. * (obstacles[i].pos - posBalle) / (1. * OBSTACLE_SPACE);
+			}
+			
+			glColor3f(fmax(lightCamera,lightBall),
+			          fmax(lightCamera,lightBall),
+			          fmax(lightCamera,lightBall));
+				
 			glPushMatrix();
 			switch (obstacles[i].wall)
 			{
@@ -135,11 +150,24 @@ void drawObstacles(GLuint texturesAraignee, GLuint texturesCreeper, GLuint textu
 			glPopMatrix();
 		}
 	}
-	if (obstacles[NB_OBSTACLES - 1].pos >= -3 * OBSTACLE_SPACE)
-	{ // Mur de fin de niveau-jeu
-		glColor3f(1.0 + (obstacles[NB_OBSTACLES - 1].pos - OBSTACLE_SPACE) / (1. * OBSTACLE_LENGTH), 1.0 + (obstacles[NB_OBSTACLES - 1].pos - OBSTACLE_SPACE) / (1. * OBSTACLE_LENGTH), 1.0 + (obstacles[NB_OBSTACLES - 1].pos - OBSTACLE_SPACE) / (1. * OBSTACLE_LENGTH));
+	//if (obstacles[NB_OBSTACLES - 1].pos >= -3 * OBSTACLE_SPACE)
+	//{ // Mur de fin de niveau-jeu
+		double lightCamera = 1.0 + (obstacles[NB_OBSTACLES - 1].pos - OBSTACLE_SPACE) / (1. * OBSTACLE_LENGTH),
+		       lightBall;
+		
+		if ((obstacles[NB_OBSTACLES - 1].pos - OBSTACLE_SPACE) - posBalle > 0) {
+			//lightBall = 1.0 + (posBalle - obstacles[i].pos) / (1. * OBSTACLE_SPACE);
+			lightBall = 0;
+		}
+		else {
+			lightBall = 1.0 + 1. * ((obstacles[NB_OBSTACLES - 1].pos - OBSTACLE_SPACE) - posBalle) / (OBSTACLE_SPACE);
+		}
+		
+		glColor3f(fmax(lightCamera,lightBall),
+		          fmax(lightCamera,lightBall),
+		          fmax(lightCamera,lightBall));
 		glTranslatef(0.0, 0.0, obstacles[NB_OBSTACLES - 1].pos - OBSTACLE_SPACE);
 		drawSquareTexture(texturesFin);
-	}
+	//}
 	glPopMatrix();
 }
