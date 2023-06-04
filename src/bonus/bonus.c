@@ -10,6 +10,9 @@ Bonus bonus[NB_BONUS];
 
 extern double obstacleSpeed;
 
+/*
+* Dessine le modèle 3D du bonus permettant au joueur de gagner une vie sous la forme d'une potion
+*/
 void drawBonusLife() {
 	glPushMatrix();
         	glColor3f(0.,1.,0.);
@@ -52,6 +55,9 @@ void drawBonusLife() {
         glPopMatrix();
 }
 
+/*
+* Dessine une face du bonus permettant à la raquette de coller à la balle
+*/
 void drawBonusStickyFace() {
 	glPushMatrix();
         	glTranslatef(-1.,-1.,0.);
@@ -75,9 +81,11 @@ void drawBonusStickyFace() {
         drawUnfilledCircle();
 }
 
+/*
+* Dessine le bonus de la colle en entier sous la forme d'une toile d'araignée
+*/
 void drawBonusSticky() {
 	glPushMatrix();
-        	//glTranslatef(0.,0.,-GL_VIEW_SIZE/3);
         	glColor3f(1.,1.,1.);
         	glRotatef(rotateAngle,0.,1.,0.);
         	glPushMatrix();
@@ -97,6 +105,9 @@ void drawBonusSticky() {
         glPopMatrix();
 }
 
+/*
+* initialise la position des bonus
+*/
 void initBonus() {
 	srand(time( NULL ));
 	for (int i=0 ; i<NB_BONUS ; i++) {
@@ -108,19 +119,24 @@ void initBonus() {
 	}
 }
 
+/*
+* Déplace les bonus à la même vitesse que les obstacles
+*/
 void moveBonus() {
 	for (int i=0 ; i<NB_BONUS ; i++) {
 		bonus[i].posZ += obstacleSpeed;
 	}
 }
 
+/*
+* Dessine l'ensemble des bonus
+*/
 void drawBonus() {
 	glPushMatrix();
 		glScalef(1./1280,1./1280,1.);
 		for (int i=0 ; i<NB_BONUS ; i++) {
 			if (bonus[i].visible) {
 				glPushMatrix();
-					//glTranslatef(*3/4-12,*3/4-6.75,bonus[i].posZ);
 					glTranslatef(bonus[i].posX-640,bonus[i].posY-640,bonus[i].posZ);
 					glScalef(128.,128.,1.);
 					switch (bonus[i].type) {

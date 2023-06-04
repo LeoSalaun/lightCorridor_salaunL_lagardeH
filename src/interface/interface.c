@@ -5,6 +5,9 @@
 
 Player player;
 
+/*
+* Dessine les vies du joueur en fonction du nombre qu'il en possède
+*/
 void drawVies(GLuint textures) {
 	glPushMatrix();
 		glScalef(0.2,0.2,1.);
@@ -16,6 +19,9 @@ void drawVies(GLuint textures) {
 	glPopMatrix();
 }
 
+/*
+* Dessine l'icône indiquant quand le bonus de la colle est actif
+*/
 void drawSticky(GLuint textures) {
 	glPushMatrix();
 		glScalef(0.2,0.2,1.);
@@ -24,6 +30,9 @@ void drawSticky(GLuint textures) {
 	glPopMatrix();
 }
 
+/*
+* Dessine l'interface complète
+*/
 void drawInterface(GLuint texturesVie, GLuint texturesSticky) {
 	drawVies(texturesVie);
 	if (player.sticky) {

@@ -19,7 +19,6 @@ extern double xpos, ypos;
 
 extern double corridorBorderPos[4];
 extern double obstacleSpeed;
-// extern double corridorBorderPos[4] = {-10,-20,-30,-40};
 extern Obstacle obstacles[NB_OBSTACLES];
 
 extern int rotateAngle;
@@ -129,6 +128,8 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 				corridorBorderPos[i] = -OBSTACLE_SPACE * (i+1);
 			}
 			
+			// On initialise les variables pour le début du jeu
+			
 			initObstacle();
 			initBonus();
 
@@ -149,6 +150,9 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 	}
 }
 
+/*
+* Gère l'appui continu du bouton droit de la souris
+*/
 void handleRightMouseButton()
 {
 	if (isDown && !(balle.sticky) && player.forward)
@@ -161,26 +165,30 @@ void handleRightMouseButton()
 	}
 }
 
+/*
+* Gère les collisions entre la balle et les murs du couloir
+*/
 void collCorridor()
 {
 	if (balle.posX - 1 <= 0 || balle.posX + 1 >= 1280)
 	{
 		balle.speeX = -balle.speeX;
-		// balle.posX = round(balle.posX/1280)*1280;
 	}
 	if (balle.posY - 1 <= 0 || balle.posY + 1 >= 720)
 	{
 		balle.speeY = -balle.speeY;
-		// balle.posY = round(balle.posY/720)*720;
 	}
 }
 
+/*
+* Gère les collisions avec les obstacles pour la balle et la raquette
+*/
 void collWall()
 {
 	for (int i = 0; i < NB_OBSTACLES; i++)
 	{
 		int x1 = 0, x2 = 1280, y1 = 0, y2 = 720;
-		switch (obstacles[i].wall)
+		switch (obstacles[i].wall) // On délimite la taille et position précise d'un obstacle
 		{
 		case 'b':
 			y1 = 720 * (1 - obstacles[i].size);
@@ -196,35 +204,35 @@ void collWall()
 			break;
 		}
 		if (fabs(obstacles[i].pos - balle.posZ) <= 1)
-		{
+		{ // S'il y a contact entre la balle et l'obstacle, alors on inverse la vitesse en Z de la balle
 
 			if ((fabs(obstacles[i].pos - balle.posZ) <= 0.5 && balle.posX >= x1 && balle.posX <= x2 && balle.posY >= y1 && balle.posY <= y2) || sqrt(pow(x1 - balle.posX, 2) + pow(obstacles[i].pos - balle.posZ, 2)) <= 1 || sqrt(pow(x2 - balle.posX, 2) + pow(obstacles[i].pos - balle.posZ, 2)) <= 1 || sqrt(pow(y1 - balle.posY, 2) + pow(obstacles[i].pos - balle.posZ, 2)) <= 1 || sqrt(pow(y2 - balle.posY, 2) + pow(obstacles[i].pos - balle.posZ, 2)) <= 1)
 			{
 				balle.speeZ = -balle.speeZ;
-				// balle.posZ = round(balle.posZ-obstacles[i].pos) + obstacles[i].pos;
 			}
 		}
 
-		// printf("%f %d %d - %f %d %d - %f\n",xpos,x1,x2,(ypos-720),y1,y2,obstacles[i].pos);
 		if (obstacles[i].pos >= -0.9 && obstacles[i].pos <= -0.5 && xpos >= x1 && xpos <= x2 && ypos >= y1 && ypos <= y2)
-		{
+		{ // S'il y a contact entre la raquette et l'obstable, alors le joueur ne peut plus avancer
 			player.forward = 0;
 		}
 	}
-	//printf("%f - %f - %f\n", xpos, (ypos - 720), obstacles[0].pos);
 }
 
+/*
+* Gère les collisions entre la balle et la raquette
+*/
 void collRaquette(GLFWwindow *window)
 {
 	if (!(balle.sticky) && balle.posZ >= -0.5 && fabs(xpos - balle.posX) <= 148 && fabs(ypos - balle.posY) <= 148 && !(player.sticky))
-	{
+	{ // S'il y a collision, alors la vitesse en Z de la balle est inversée et la vitesse en X et en Y est recalculée en fonction de la distance par rapport au centre de la raquette
 		balle.speeZ = -balle.speeZ;
 		balle.speeX = (xpos - balle.posX) * balle.speeZ;
 		balle.speeY = (ypos - balle.posY) * balle.speeZ;
 		balle.posZ = -0.6;
 	}
 	else if (!(balle.sticky) && balle.posZ >= -0.5 && fabs(xpos - balle.posX) <= 148 && fabs(ypos - balle.posY) <= 148 && player.sticky)
-	{
+	{ // S'il y a collision mais que le bonus de la colle est activé, alors la balle est réinitialisée et recollée à la raquette
 		balle.sticky = 1;
 		balle.speeX = 0;
 		balle.speeY = 0;
@@ -232,7 +240,7 @@ void collRaquette(GLFWwindow *window)
 		player.sticky = 0;
 	}
 	else if (!(balle.sticky) && balle.posZ >= -0.5)
-	{
+	{ // S'il n'y a pas collision mais que la balle va derrière la raquette, alors elle est réinitialisée et recollée à la raquette et le joueur perd une vie
 		balle.sticky = 1;
 		balle.speeX = 0;
 		balle.speeY = 0;
@@ -244,17 +252,18 @@ void collRaquette(GLFWwindow *window)
 		}
 	}
 	if (obstacles[NB_OBSTACLES - 1].pos - OBSTACLE_SPACE >= -0.5)
-	{
+	{ // Si la raquette a atteint le mur fe fin, alors le menu de victoire est atteint
 		player.menu = 2;
 	}
 }
 
+/*
+* Gère les collisions entre la raquette et les bonus
+*/
 void collBonus()
 {
 	for (int i = 0; i < NB_BONUS; i++)
 	{
-		//printf("%d -> %f %f %f\n", i, bonus[i].posX, bonus[i].posY, bonus[i].posZ);
-		//printf("%f %f\n", xpos, ypos);
 		if (bonus[i].visible && bonus[i].posZ <= 1. && bonus[i].posZ >= -2. && sqrt(pow(xpos - bonus[i].posX, 2) + pow(ypos - bonus[i].posY, 2)) <= 100 && (!(bonus[i].type) || (!(player.sticky) && bonus[i].type)))
 		{
 			bonus[i].visible = 0;
@@ -460,7 +469,9 @@ int main(int argc, char **argv)
 	{
 		printf("Image de Zombie correctement chargée\n");
 	}
-	//-------------------------------------------
+	
+	/* Load textures */
+	
 	GLuint texturesTop, texturesBottom, texturesSides, texturesVie, texturesSticky, texturesBall, texturesFin, texturesAraignee, texturesMenu, texturesCreeper, texturesMort, texturesSquelette, texturesVictoire, texturesZombie;
 	//-----------------Top----------------------
 	glGenTextures(1, &texturesTop);
@@ -602,12 +613,15 @@ int main(int argc, char **argv)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthZombie, heightZombie, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageZombie);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-	//-------------------------------------------
+	
+	/* Enable transparency */
+	
 	glEnable(GL_BLEND);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	/* Initialize variables */
+	/* Initialize menu */
+	
 	player.menu = 1;
 
 	/* Loop until the user closes the window */
@@ -629,7 +643,7 @@ int main(int argc, char **argv)
 
 		switch (player.menu)
 		{
-		case 0:
+		case 0: // Pas de menu, le jeu est lancé
 			handleRightMouseButton();
 
 			player.forward = 1;
@@ -638,32 +652,32 @@ int main(int argc, char **argv)
 			drawCorridor(texturesTop, texturesBottom, texturesSides);
 
 			glPushMatrix();
-			glScalef(6. / GL_VIEW_SIZE, 6. / GL_VIEW_SIZE, 2. / GL_VIEW_SIZE);
-			glTranslatef(0., 0., -20.);
-			glScalef(20., 20., 20.);
+				glScalef(6. / GL_VIEW_SIZE, 6. / GL_VIEW_SIZE, 2. / GL_VIEW_SIZE);
+				glTranslatef(0., 0., -20.);
+				glScalef(20., 20., 20.);
 
-			drawCorridorBorder();
+				drawCorridorBorder();
 
-			drawObstacles(texturesAraignee, texturesCreeper, texturesSquelette, texturesZombie, texturesFin, balle.posZ);
+				drawObstacles(texturesAraignee, texturesCreeper, texturesSquelette, texturesZombie, texturesFin, balle.posZ);
 
-			moveBonus();
+				moveBonus();
 
-			drawBonus();
+				drawBonus();
 
-			moveBall();
+				moveBall();
 
-			if (!(balle.sticky))
-			{
-				collCorridor();
+				if (!(balle.sticky))
+				{
+					collCorridor();
 
-				collWall();
+					collWall();
 
-				collRaquette(window);
-			}
+					collRaquette(window);
+				}
 
-			collBonus();
+				collBonus();
 
-			drawBall(texturesBall);
+				drawBall(texturesBall);
 			glPopMatrix();
 
 			drawRaquette();
@@ -676,17 +690,17 @@ int main(int argc, char **argv)
 				rotateAngle = 0;
 			}
 			break;
-		case 1:
+		case 1: // Menu principal
 			glTranslatef(0., 0., -0.86);
 			glScalef(16. / 9, 1., 1.);
 			drawSquareTexture(texturesMenu);
 			break;
-		case 2:
+		case 2: // Menu de victoire
 			glTranslatef(0., 0., -0.86);
 			glScalef(16. / 9, 1., 1.);
 			drawSquareTexture(texturesVictoire);
 			break;
-		case 3:
+		case 3: // Menu de mort
 			glTranslatef(0., 0., -0.86);
 			glScalef(16. / 9, 1., 1.);
 			drawSquareTexture(texturesMort);
@@ -707,7 +721,9 @@ int main(int argc, char **argv)
 			glfwWaitEventsTimeout(FRAMERATE_IN_SECONDS - elapsedTime);
 		}
 	}
-
+	
+	/* Free miages and delete textures */
+	
 	stbi_image_free(imageTop);
 
 	glDeleteTextures(1, &texturesTop);
@@ -731,7 +747,9 @@ int main(int argc, char **argv)
 	stbi_image_free(imageBall);
 
 	glDeleteTextures(1, &texturesBall);
-
+	
+	/* Disable transparency */
+	
 	glDisable(GL_BLEND);
 
 	glfwTerminate();

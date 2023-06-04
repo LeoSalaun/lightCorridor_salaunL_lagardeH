@@ -7,7 +7,6 @@ typedef struct Bonus {
 } Bonus;
 
 #define ROTATE_SPEED 3
-
 #define NB_BONUS 4
 
 void drawBonusLife();

@@ -3,6 +3,9 @@
 
 #include "corridor.h"
 
+/*
+* Dessine un carré sur lequel on applique une texture
+*/
 void drawSquareTexture(GLuint textures) {
 	glEnable(GL_TEXTURE_2D);
 		
@@ -24,8 +27,11 @@ void drawSquareTexture(GLuint textures) {
 	glDisable(GL_TEXTURE_2D);
 }
 
+/*
+* Dessine les quatre murs du couloir
+*/
 void drawCorridor(GLuint texturesTop, GLuint texturesBottom, GLuint texturesSides) {
-	// dessiner mur 9 gauche jaune
+	// dessiner mur gauche
 	glPushMatrix();
 	glTranslatef(-8, 0., -GL_VIEW_SIZE);
 	glScalef(4.5, 9, 85);
@@ -33,7 +39,7 @@ void drawCorridor(GLuint texturesTop, GLuint texturesBottom, GLuint texturesSide
 	drawSquareTexture(texturesSides);
 	glPopMatrix();
 
-	// dessiner mur 9 droit rouge
+	// dessiner mur droit
 	glPushMatrix();
 	glTranslatef(8, 0., -GL_VIEW_SIZE);
 	glScalef(4.5, 9, 85);
@@ -41,7 +47,7 @@ void drawCorridor(GLuint texturesTop, GLuint texturesBottom, GLuint texturesSide
 	drawSquareTexture(texturesSides);
 	glPopMatrix();
 
-	// dessiner mur 16 haut bleu
+	// dessiner mur du haut
 	glPushMatrix();
 	glTranslatef(0, 4.5, -GL_VIEW_SIZE);
 	glScalef(16, 8, 85);
@@ -50,7 +56,7 @@ void drawCorridor(GLuint texturesTop, GLuint texturesBottom, GLuint texturesSide
 	drawSquareTexture(texturesTop);
 	glPopMatrix();
 
-	// dessiner mur 16 bas rose
+	// dessiner mur du bas
 	glPushMatrix();
 	glTranslatef(0, -4.5, -GL_VIEW_SIZE);
 	glScalef(16, 8, 85);
